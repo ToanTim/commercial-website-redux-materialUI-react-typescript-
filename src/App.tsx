@@ -10,7 +10,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomeScreen />} />
-
         <Route path="products" element={<ProductScreen />} />
         <Route path="*" element={<NoPageScreen />} />
       </Routes>
