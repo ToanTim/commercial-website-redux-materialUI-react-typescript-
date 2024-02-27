@@ -13,7 +13,7 @@ const Opening = () => {
   };
 
   const textOrder = [
-    { timeOut: 2000, text: "Welcome to the YourHouse " },
+    { timeOut: 2000, text: "Welcome to YourHouse " },
     { timeOut: 3000, text: "Fast search with chatGPT" },
     { timeOut: 4000, text: "Everything you need with one click" },
     { timeOut: 5000, text: "Book, delivery, recieve within 5 minutes" },
@@ -32,9 +32,7 @@ const Opening = () => {
                   unmountOnExit
                   timeout={item.timeOut}
                 >
-                  <Typography variant="h4" style={{ color: "black" }}>
-                    {item.text}
-                  </Typography>
+                  <Typography variant="h4">{item.text}</Typography>
                 </Slide>
               );
             })}

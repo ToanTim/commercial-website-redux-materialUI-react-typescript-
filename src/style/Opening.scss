@@ -1,4 +1,8 @@
-// HomePage.scss
+// Import Variables
+@use "variables";
+
+// Import Mixins
+@use "mixins";
 
 .openning__div {
   z-index: 10;
@@ -27,9 +31,10 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: white;
+  color: variables.$primary-text-color;
   z-index: 11;
   gap: 30px;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 .openning__fade-image_overlay-content-button {
 }
