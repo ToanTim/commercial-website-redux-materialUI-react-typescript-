@@ -26,7 +26,7 @@ const Opening = () => {
             {textOrder.map((item) => {
               return (
                 <Slide
-                  direction="down"
+                  direction="left"
                   in
                   mountOnEnter
                   unmountOnExit

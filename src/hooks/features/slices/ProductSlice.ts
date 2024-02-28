@@ -5,8 +5,14 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { useFetch } from "../../hooks";
 import axios, { AxiosResponse } from "axios";
 
+interface initialProductType {
+  entities: ProductType[];
+  loading: boolean;
+  error: string;
+}
+
 // Initial for product is an emplty array
-const initialProduct = {
+const initialProduct: initialProductType = {
   entities: [] as ProductType[],
   loading: false,
   error: "" as string,

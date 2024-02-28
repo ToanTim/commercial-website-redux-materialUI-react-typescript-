@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { UserType } from "../../../misc/User";
 
+// not yet implemented, implement later with types for safty
 const initialUser: UserType = {
   id: 0,
   email: "",
