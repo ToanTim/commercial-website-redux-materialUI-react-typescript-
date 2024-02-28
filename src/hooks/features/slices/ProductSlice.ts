@@ -1,9 +1,12 @@
+//external import
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios, { AxiosResponse } from "axios";
+import type { PayloadAction } from "@reduxjs/toolkit";
+
+//internal import
+import { useFetch } from "../../hooks";
 import { CategoryType, ProductType } from "../../../misc/Product";
 import { RootState } from "../store/store";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { useFetch } from "../../hooks";
-import axios, { AxiosResponse } from "axios";
 
 interface initialProductType {
   entities: ProductType[];

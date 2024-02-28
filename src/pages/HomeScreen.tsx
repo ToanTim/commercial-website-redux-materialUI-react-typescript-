@@ -1,9 +1,12 @@
+//external
 import React, { useEffect, useState } from "react";
+import { Box, Button, Container, Fade, Typography } from "@mui/material";
+
+//internal
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { RootState } from "../hooks/features/store/store";
 import { fetchDataProduct } from "../hooks/features/slices/ProductSlice";
 import Header from "../components/Header";
-import { Box, Button, Container, Fade, Typography } from "@mui/material";
 import "../style/HomeScreen.scss";
 import pictureTest from "./test.jpg";
 const HomeScreen = () => {

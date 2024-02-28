@@ -1,3 +1,4 @@
+//external
 import React from "react";
 import {
   Typography,
@@ -11,6 +12,8 @@ import {
   Container,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
+
+//internal
 const Header = () => {
   return (
     <AppBar position="relative">

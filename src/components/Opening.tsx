@@ -1,8 +1,10 @@
+//external import
 import { Box, Button, Fade, Slide, Typography } from "@mui/material";
 import React, { useState } from "react";
-import pictureTest from "../pages/test.jpg";
+
+//internal import
 import "../style/Opening.scss";
-import { PhotoAlbum } from "@mui/icons-material";
+
 const Opening = () => {
   const [showImage, setShowImage] = useState(true);
   const handleClick = () => {
