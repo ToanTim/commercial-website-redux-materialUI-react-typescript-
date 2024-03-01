@@ -9,16 +9,16 @@ import { CategoryType, ProductType } from "../../../misc/Product";
 import { RootState } from "../store/store";
 
 interface initialProductType {
-  entities: ProductType[];
-  loading: boolean;
-  error: string;
+  entityProduct: ProductType[];
+  loadingProduct: boolean;
+  errorProduct: string;
 }
 
 // Initial for product is an emplty array
 const initialProduct: initialProductType = {
-  entities: [] as ProductType[],
-  loading: false,
-  error: "" as string,
+  entityProduct: [] as ProductType[],
+  loadingProduct: false,
+  errorProduct: "" as string,
 };
 
 // Create an async thunk to fetch data
@@ -41,16 +41,16 @@ export const productSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchDataProduct.pending, (state) => {
-        state.loading = true;
-        state.error = ""; //clear previous error
+        state.loadingProduct = true;
+        state.errorProduct = ""; //clear previous error
       })
       .addCase(fetchDataProduct.fulfilled, (state, action) => {
-        state.loading = false;
-        state.entities = action.payload as ProductType[];
+        state.loadingProduct = false;
+        state.entityProduct = action.payload as ProductType[];
       })
       .addCase(fetchDataProduct.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        state.loadingProduct = false;
+        state.errorProduct = action.payload as string;
       });
   },
 });

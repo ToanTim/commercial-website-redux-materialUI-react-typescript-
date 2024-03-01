@@ -1,3 +1,5 @@
+import { Category } from "@mui/icons-material";
+
 export interface CategoryType {
   id: number;
   name: string;
@@ -16,3 +18,4 @@ export interface ProductType {
   updatedAt: string;
   category: CategoryType;
 }
+export type CategorySingleType = Pick<CategoryType, "id" | "name" | "image">;

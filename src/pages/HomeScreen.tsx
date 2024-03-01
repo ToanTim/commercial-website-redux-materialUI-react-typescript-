@@ -6,38 +6,68 @@ import { Box, Button, Container, Fade, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { RootState } from "../hooks/features/store/store";
 import { fetchDataProduct } from "../hooks/features/slices/ProductSlice";
-import Header from "../components/Header";
 import "../style/HomeScreen.scss";
-import pictureTest from "./test.jpg";
+import { DataFetchLinkList } from "../misc/BaseVariables";
+import { fetchDataCategory } from "../hooks/features/slices/CategorySlice";
+
 const HomeScreen = () => {
   const dispatch = useAppDispatch();
   const productState = useAppSelector((state: RootState) => state.products);
+  const categoryState = useAppSelector((state: RootState) => state.categories);
   const [showImage, setShowImage] = useState(true);
-  /* useEffect(() => {
-    dispatch(
-      fetchDataProduct("https://api.escuelajs.co/api/v1/products") as any
-    )
+
+  //Fetch initial data for application
+  useEffect(() => {
+    dispatch(fetchDataProduct(DataFetchLinkList.dataProduct.getAll) as any)
       .then((data: any) => {
-        console.log("Fetched data:", data); // Log the fetched data to the console
+        //console.log("Fetched data prodcuts:", data); // Log the fetched data to the console
+      })
+      .catch((error: any) => {
+        //console.error("Error fetching data:", error); // Log any errors to the console
+      }); // Dispatch the fetchData action
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchDataCategory(DataFetchLinkList.dataCategory.getAll) as any)
+      .then((data: any) => {
+        console.log("Fetched data categories:", data); // Log the fetched data to the console
       })
       .catch((error: any) => {
         console.error("Error fetching data:", error); // Log any errors to the console
       }); // Dispatch the fetchData action
   }, [dispatch]);
 
+  //incase of not yet have state ready
+
   if (!productState) {
     return <div>Loading...</div>;
   }
 
-  const { loading, error, entities } = productState;
-
-  if (loading) {
+  if (!categoryState) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  } */
+  //Loading and error handling
+  const { loadingProduct, errorProduct, entityProduct } = productState;
+  const { loadingCategory, errorCategory, entityCategory } = categoryState;
+
+  //Product
+  if (loadingProduct) {
+    return <div>Loading...</div>;
+  }
+
+  if (errorProduct) {
+    return <div>Error Product: {errorProduct}</div>;
+  }
+
+  //Category
+  if (loadingCategory) {
+    return <div>Loading...</div>;
+  }
+
+  if (errorCategory) {
+    return <div>Error Category: {errorCategory}</div>;
+  }
 
   const handleClick = () => {
     setShowImage(false);
