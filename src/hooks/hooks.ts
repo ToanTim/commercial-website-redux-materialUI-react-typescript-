@@ -4,6 +4,7 @@ import type { RootState, AppDispatch } from "./features/store/store";
 import { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
@@ -29,3 +30,13 @@ export function useFetch<T>(url: string) {
 
   return { data, loading, error };
 }
+
+const useReduxReducerRunner = (func: Function, params: any[]) => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(func(...params));
+  }, [dispatch]);
+};
+
+export default useReduxReducerRunner;

@@ -9,7 +9,7 @@ import { fetchDataProduct } from "../hooks/features/slices/ProductSlice";
 import "../style/HomeScreen.scss";
 import { DataFetchLinkList } from "../misc/BaseVariables";
 import { fetchDataCategory } from "../hooks/features/slices/CategorySlice";
-
+import useReduxReducerRunner from "../hooks/hooks";
 const HomeScreen = () => {
   const dispatch = useAppDispatch();
   const productState = useAppSelector((state: RootState) => state.products);
@@ -17,28 +17,14 @@ const HomeScreen = () => {
   const [showImage, setShowImage] = useState(true);
 
   //Fetch initial data for application
-  useEffect(() => {
-    dispatch(fetchDataProduct(DataFetchLinkList.dataProduct.getAll) as any)
-      .then((data: any) => {
-        //console.log("Fetched data prodcuts:", data); // Log the fetched data to the console
-      })
-      .catch((error: any) => {
-        //console.error("Error fetching data:", error); // Log any errors to the console
-      }); // Dispatch the fetchData action
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(fetchDataCategory(DataFetchLinkList.dataCategory.getAll) as any)
-      .then((data: any) => {
-        console.log("Fetched data categories:", data); // Log the fetched data to the console
-      })
-      .catch((error: any) => {
-        console.error("Error fetching data:", error); // Log any errors to the console
-      }); // Dispatch the fetchData action
-  }, [dispatch]);
+  useReduxReducerRunner(fetchDataProduct, [
+    DataFetchLinkList.dataProduct.getAll as any,
+  ]);
+  useReduxReducerRunner(fetchDataCategory, [
+    DataFetchLinkList.dataCategory.getAll as any,
+  ]);
 
   //incase of not yet have state ready
-
   if (!productState) {
     return <div>Loading...</div>;
   }
@@ -54,6 +40,8 @@ const HomeScreen = () => {
   //Product
   if (loadingProduct) {
     return <div>Loading...</div>;
+  } else {
+    console.log("product data:", entityProduct);
   }
 
   if (errorProduct) {
@@ -63,6 +51,10 @@ const HomeScreen = () => {
   //Category
   if (loadingCategory) {
     return <div>Loading...</div>;
+  }
+
+  if (entityCategory) {
+    console.log("category data:", entityCategory);
   }
 
   if (errorCategory) {
@@ -76,7 +68,13 @@ const HomeScreen = () => {
     }, 2000); // fade out for 2 seconds
   };
 
-  return <div className="homepage">This is the content</div>;
+  return (
+    <div className="homepage">
+      {entityCategory.map((item) => (
+        <p>{item.name}</p>
+      ))}
+    </div>
+  );
 };
 
 export default HomeScreen;

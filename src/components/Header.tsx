@@ -68,7 +68,7 @@ const Header = () => {
 
         <Container maxWidth="sm">
           {navButton.map((item) => (
-            <Button onClick={item.onButtonClick} variant="text" key="item.text">
+            <Button onClick={item.onButtonClick} variant="text" key={item.text}>
               <Typography variant="h6" color="white">
                 {item.text}
               </Typography>

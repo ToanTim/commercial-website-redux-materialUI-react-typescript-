@@ -7,16 +7,10 @@ const ProductScreen = () => {
       <CssBaseline />
       <main>
         <div>
-          <Container maxWidth="sm">
-            <Typography
-              variant="h2"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-            >
-              Product
-            </Typography>
-          </Container>
+          <Container maxWidth="sm"></Container>
+          <Typography variant="h2" color="textPrimary" gutterBottom>
+            Product
+          </Typography>
         </div>
       </main>
     </>
