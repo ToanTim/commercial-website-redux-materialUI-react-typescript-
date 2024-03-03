@@ -31,13 +31,6 @@ const Header = () => {
   const navButton: navButtonType[] = [
     {
       link: "#",
-      text: "Home",
-      onButtonClick: () => {
-        navigate(websiteRouterList.home.shortLink);
-      },
-    },
-    {
-      link: "#",
       text: "Products",
       onButtonClick: () => {
         navigate(websiteRouterList.product.shortLink);
@@ -59,34 +52,41 @@ const Header = () => {
           edge="start"
           color="inherit"
           aria-label="menu"
-          sx={{ mr: 2 }}
+          onClick={() => {
+            navigate(websiteRouterList.home.shortLink);
+          }}
         >
           <HiveIcon />
           {/* Button at the middle */}
-          <Button color="inherit">BeeHouse</Button>
+          <Button color="inherit" style={{ fontSize: "clamp(1px, 2vw, 20px)" }}>
+            BeeHouse
+          </Button>
         </IconButton>
 
         <Container maxWidth="sm">
           {navButton.map((item) => (
             <Button onClick={item.onButtonClick} variant="text" key={item.text}>
-              <Typography variant="h6" color="white">
+              <Typography
+                style={{ fontSize: "clamp(1px, 2vw, 20px)" }}
+                color="white"
+              >
                 {item.text}
               </Typography>
             </Button>
           ))}
-          <IconButton
-            size="large"
-            edge="end"
-            color="inherit"
-            aria-label="profile"
-            sx={{ ml: "auto" }}
-            onClick={() => {
-              navigate(websiteRouterList.authentication.shortLink);
-            }}
-          >
-            <AccountCircleIcon />
-          </IconButton>
         </Container>
+        <IconButton
+          size="small"
+          edge="end"
+          color="inherit"
+          aria-label="profile"
+          sx={{ ml: "auto" }}
+          onClick={() => {
+            navigate(websiteRouterList.authentication.shortLink);
+          }}
+        >
+          <AccountCircleIcon />
+        </IconButton>
       </Toolbar>
     </AppBar>
   );

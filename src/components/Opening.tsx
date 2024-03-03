@@ -4,10 +4,26 @@ import React, { useState } from "react";
 
 //internal import
 import "../style/Opening.scss";
+import useReduxReducerRunner, { useAppSelector } from "../hooks/hooks";
+import { fetchDataProduct } from "../hooks/features/slices/ProductSlice";
+import { DataFetchLinkList } from "../misc/BaseVariables";
+import { fetchDataCategory } from "../hooks/features/slices/CategorySlice";
+import { RootState } from "../hooks/features/store/store";
 
 const Opening = () => {
+  const productState = useAppSelector((state: RootState) => state.products);
+  const { loadingProduct, errorProduct, entityProduct } = productState;
   const [showImage, setShowImage] = useState(true);
-  const [divDisplay, setDivDisplay] = useState(true);
+  const [divDisplay, setDivDisplay] = useState(entityProduct ? false : true); //refresh page does not need opening component -want to test if first visit from user or user does refresh page
+
+  //Fetch initial data for application
+  useReduxReducerRunner(fetchDataProduct, [
+    DataFetchLinkList.dataProduct.getAll as any,
+  ]);
+  useReduxReducerRunner(fetchDataCategory, [
+    DataFetchLinkList.dataCategory.getAll as any,
+  ]);
+
   const handleClick = () => {
     setShowImage(false);
     setTimeout(() => {
@@ -28,6 +44,7 @@ const Opening = () => {
     { id: 3, timeOut: 4000, text: "Everything you need with one click" },
     { id: 4, timeOut: 5000, text: "Book, delivery, recieve within 5 minutes" },
   ];
+
   return (
     <div className={divDisplay ? "openning__div" : "openning__div-closed"}>
       <Fade in={showImage}>

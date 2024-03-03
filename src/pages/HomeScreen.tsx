@@ -16,14 +16,6 @@ const HomeScreen = () => {
   const categoryState = useAppSelector((state: RootState) => state.categories);
   const [showImage, setShowImage] = useState(true);
 
-  //Fetch initial data for application
-  useReduxReducerRunner(fetchDataProduct, [
-    DataFetchLinkList.dataProduct.getAll as any,
-  ]);
-  useReduxReducerRunner(fetchDataCategory, [
-    DataFetchLinkList.dataCategory.getAll as any,
-  ]);
-
   //incase of not yet have state ready
   if (!productState) {
     return <div>Loading...</div>;

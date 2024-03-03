@@ -1,6 +1,9 @@
+//external
 import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+//internal
 import HomeScreen from "./pages/HomeScreen";
 import ProductScreen from "./pages/ProductScreen";
 import { NoPageScreen } from "./pages/NoPageScreen";
@@ -9,6 +12,7 @@ import Header from "./components/Header";
 import Opening from "./components/Opening";
 import UserProfileScreen from "./pages/UserProfileScreen";
 import AuthenticationScreen from "./pages/AuthenticationScreen";
+
 function App() {
   return (
     <>
