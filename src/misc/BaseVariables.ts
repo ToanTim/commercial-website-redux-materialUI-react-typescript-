@@ -11,8 +11,8 @@ export const websiteRouterList: { [key: string]: RouteLinkText } = {
     fullLink: basedLink,
   },
   product: {
-    shortLink: "/products",
-    fullLink: basedLink + "/products",
+    shortLink: "/products?page=",
+    fullLink: basedLink + "/products?page=",
   },
   authentication: {
     shortLink: "/authentication",

@@ -33,7 +33,7 @@ const Header = () => {
       link: "#",
       text: "Products",
       onButtonClick: () => {
-        navigate(websiteRouterList.product.shortLink);
+        navigate(websiteRouterList.product.shortLink + "1");
       },
     },
     {

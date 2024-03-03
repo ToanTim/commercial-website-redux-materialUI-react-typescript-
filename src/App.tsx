@@ -12,6 +12,7 @@ import Header from "./components/Header";
 import Opening from "./components/Opening";
 import UserProfileScreen from "./pages/UserProfileScreen";
 import AuthenticationScreen from "./pages/AuthenticationScreen";
+import LoadingScreen from "./pages/LoadingScreen";
 
 function App() {
   return (

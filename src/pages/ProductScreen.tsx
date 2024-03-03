@@ -10,25 +10,75 @@ import {
   CardActions,
   Link,
   Button,
+  Pagination,
 } from "@mui/material";
-import React from "react";
+import React, { useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+//internal
 import { useAppSelector } from "../hooks/hooks";
 import { RootState } from "../hooks/features/store/store";
 import "../style/ProductScreen.scss";
+import { websiteRouterList } from "../misc/BaseVariables";
 
 const ProductScreen = () => {
+  //TODO: challenge
+  //wwhen we display category: what should we do when that categories does have any product yet?
+
+  const navigate = useNavigate();
   // Dummy categories array (replace with your actual categories array)
   const categoryState = useAppSelector((state: RootState) => state.categories);
   const { entityCategory } = categoryState;
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
 
+  //-1 cause it start with 1 but array start with 0
+  let page = parseInt(queryParams.get("page") ?? "", 0) - 1;
+  let startIndex = 10 * page;
+  let endIndex = startIndex + 10;
+  const totalPages = Math.ceil(entityCategory.length / 10);
+  //ensure that begin and end will never pass the limit of categories array
+
+  console.log("entityCategory", entityCategory);
+  //if page more than total pages
+  if (page > totalPages) {
+    page = totalPages;
+    startIndex = totalPages * 10;
+    endIndex = entityCategory.length;
+  }
+
+  //if endIndex is more than array length
+  if (endIndex > entityCategory.length) {
+    endIndex = entityCategory.length;
+  }
+
+  //memorized data from pages
+  const dataDisplay = useMemo(() => {
+    return entityCategory.slice(startIndex, endIndex);
+  }, [entityCategory, startIndex, endIndex]);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Optional smooth scrolling behavior
+    });
+  };
+
+  const handleChangePagination = (
+    event: React.ChangeEvent<unknown>,
+    value: number //this is numebr of page clicked on pagition bar
+  ) => {
+    navigate(websiteRouterList.product.shortLink + value);
+    scrollToTop();
+  };
   return (
     <>
       <CssBaseline />
       <main>
         <Container maxWidth="md">
-          {entityCategory.map((category) => (
+          {dataDisplay.map((category) => (
             <div key={category.id}>
-              <Typography variant="h5" gutterBottom>
+              <Typography variant="h5" gutterBottom marginTop={10}>
                 {category.name}
               </Typography>
               {/* Render products for each category */}
@@ -70,6 +120,15 @@ const ProductScreen = () => {
               </Box>
             </div>
           ))}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+            }}
+          >
+            <Pagination count={totalPages} onChange={handleChangePagination} />
+          </Box>
         </Container>
       </main>
     </>

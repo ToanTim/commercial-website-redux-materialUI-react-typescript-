@@ -10,6 +10,7 @@ import "../style/HomeScreen.scss";
 import { DataFetchLinkList } from "../misc/BaseVariables";
 import { fetchDataCategory } from "../hooks/features/slices/CategorySlice";
 import useReduxReducerRunner from "../hooks/hooks";
+import LoadingScreen from "./LoadingScreen";
 const HomeScreen = () => {
   const dispatch = useAppDispatch();
   const productState = useAppSelector((state: RootState) => state.products);
@@ -31,9 +32,7 @@ const HomeScreen = () => {
 
   //Product
   if (loadingProduct) {
-    return <div>Loading...</div>;
-  } else {
-    console.log("product data:", entityProduct);
+    return <LoadingScreen></LoadingScreen>;
   }
 
   if (errorProduct) {

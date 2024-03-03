@@ -34,6 +34,18 @@ export const fetchDataProduct = createAsyncThunk(
   }
 );
 
+export const fetchDataProductByCategory = createAsyncThunk(
+  "data/fetchDataProductByCategory",
+  async (url: string) => {
+    try {
+      const response: AxiosResponse<ProductType[]> = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 export const productSlice = createSlice({
   name: "product",
   initialState: initialProduct,
