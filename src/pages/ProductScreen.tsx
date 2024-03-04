@@ -12,7 +12,7 @@ import {
   Button,
   Pagination,
 } from "@mui/material";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 //internal
@@ -24,6 +24,7 @@ import { websiteRouterList } from "../misc/BaseVariables";
 const ProductScreen = () => {
   //TODO: challenge
   //wwhen we display category: what should we do when that categories does have any product yet?
+  // Implement Pagination so it can be reuseable
 
   const navigate = useNavigate();
   // Dummy categories array (replace with your actual categories array)
@@ -36,10 +37,10 @@ const ProductScreen = () => {
   let page = parseInt(queryParams.get("page") ?? "", 0) - 1;
   let startIndex = 10 * page;
   let endIndex = startIndex + 10;
-  const totalPages = Math.ceil(entityCategory.length / 10);
-  //ensure that begin and end will never pass the limit of categories array
+  //memorized data from pages
 
-  console.log("entityCategory", entityCategory);
+  const totalPages = Math.ceil(entityCategory.length / 10);
+
   //if page more than total pages
   if (page > totalPages) {
     page = totalPages;
@@ -52,7 +53,6 @@ const ProductScreen = () => {
     endIndex = entityCategory.length;
   }
 
-  //memorized data from pages
   const dataDisplay = useMemo(() => {
     return entityCategory.slice(startIndex, endIndex);
   }, [entityCategory, startIndex, endIndex]);
@@ -71,11 +71,28 @@ const ProductScreen = () => {
     navigate(websiteRouterList.product.shortLink + value);
     scrollToTop();
   };
+
+  const paginationBox = (
+    <Box
+      sx={{
+        display: totalPages <= 1 ? "none" : "flex",
+        justifyContent: "center",
+        marginTop: "20px",
+      }}
+    >
+      <Pagination
+        count={totalPages}
+        page={page + 1}
+        onChange={handleChangePagination}
+      />
+    </Box>
+  );
   return (
     <>
       <CssBaseline />
       <main>
         <Container maxWidth="md">
+          {paginationBox}
           {dataDisplay.map((category) => (
             <div key={category.id}>
               <Typography variant="h5" gutterBottom marginTop={10}>
@@ -120,15 +137,7 @@ const ProductScreen = () => {
               </Box>
             </div>
           ))}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "20px",
-            }}
-          >
-            <Pagination count={totalPages} onChange={handleChangePagination} />
-          </Box>
+          {paginationBox}
         </Container>
       </main>
     </>
