@@ -18,4 +18,9 @@ export interface ProductType {
   updatedAt: string;
   category: CategoryType;
 }
+
+export interface ProductByCategory {
+  [categoryId: number]: ProductType[];
+}
+
 export type CategorySingleType = Pick<CategoryType, "id" | "name" | "image">;

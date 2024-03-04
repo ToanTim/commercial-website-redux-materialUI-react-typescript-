@@ -5,11 +5,16 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 //internal import
 import { useFetch } from "../../hooks";
-import { CategoryType, ProductType } from "../../../misc/Product";
+import {
+  CategorySingleType,
+  ProductByCategory,
+  ProductType,
+} from "../../../misc/Product";
 import { RootState } from "../store/store";
 
 interface initialProductType {
   entityProduct: ProductType[];
+  entityByCategory: ProductByCategory;
   loadingProduct: boolean;
   errorProduct: string;
 }
@@ -17,6 +22,7 @@ interface initialProductType {
 // Initial for product is an emplty array
 const initialProduct: initialProductType = {
   entityProduct: [] as ProductType[],
+  entityByCategory: [] as ProductByCategory,
   loadingProduct: false,
   errorProduct: "" as string,
 };
@@ -34,22 +40,36 @@ export const fetchDataProduct = createAsyncThunk(
   }
 );
 
-export const fetchDataProductByCategory = createAsyncThunk(
-  "data/fetchDataProductByCategory",
-  async (url: string) => {
-    try {
-      const response: AxiosResponse<ProductType[]> = await axios.get(url);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-);
-
 export const productSlice = createSlice({
   name: "product",
   initialState: initialProduct,
-  reducers: {},
+  reducers: {
+    filterProductsByCategories: (
+      state,
+      action: PayloadAction<CategorySingleType[]>
+    ) => {
+      const categoryIds: number[] = action.payload.map(
+        (category) => category.id
+      );
+      const filteredProducts: ProductByCategory = {};
+
+      // Loop through each category ID
+      categoryIds.forEach((categoryId) => {
+        // Filter products by the current category ID
+        const productsInCategory = state.entityProduct.filter(
+          (productItem) => productItem.category.id === categoryId
+        );
+
+        // Assign filtered products to the category ID in the result object
+        if (productsInCategory.length > 0) {
+          filteredProducts[categoryId] = productsInCategory;
+        }
+      });
+
+      // Update the state with filtered products
+      state.entityByCategory = filteredProducts;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchDataProduct.pending, (state) => {
@@ -68,6 +88,6 @@ export const productSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const {} = productSlice.actions;
+export const { filterProductsByCategories } = productSlice.actions;
 
 export default productSlice.reducer;

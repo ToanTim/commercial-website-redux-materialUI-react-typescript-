@@ -31,12 +31,11 @@ export function useFetch<T>(url: string) {
   return { data, loading, error };
 }
 
-const useReduxReducerRunner = (func: Function, params: any[]) => {
+const useReduxReducerRunner = (func: Function, params: any[], second?: any) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(func(...params));
-  }, [dispatch]);
+  }, [dispatch, second]);
 };
-
 export default useReduxReducerRunner;
