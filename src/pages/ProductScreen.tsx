@@ -24,7 +24,7 @@ import { RootState } from "../hooks/features/store/store";
 import "../style/ProductScreen.scss";
 import { websiteRouterList } from "../misc/BaseVariables";
 import { filterProductsByCategories } from "../hooks/features/slices/ProductSlice";
-
+import defaultProductPicture from "../components/pictures/default_product_image.jpg";
 const ProductScreen = () => {
   //TODO: challenge
   //wwhen we display category: what should we do when that categories does have any product yet?
@@ -138,39 +138,24 @@ const ProductScreen = () => {
                           <CardMedia
                             component="img"
                             height="140"
-                            image="https://source.unsplash.com/random"
+                            image={defaultProductPicture}
                             alt="Product Image"
                           />
                           <CardContent className="cardContent">
                             <Typography
                               gutterBottom
                               variant="h5"
-                              component="h2"
+                              component="div"
                             >
                               {item.title}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                               {item.description}
                             </Typography>
-                            <Typography variant="h6" color="text.secondary">
-                              Price: {item.price} USD
-                            </Typography>
                           </CardContent>
                           <CardActions>
-                            <Button
-                              size="small"
-                              variant="contained"
-                              color="primary"
-                            >
-                              Detail
-                            </Button>
-                            <Button
-                              size="small"
-                              variant="contained"
-                              color="primary"
-                            >
-                              Add to cart
-                            </Button>
+                            <Button size="small">More detail</Button>
+                            <Button size="small">Add to my cart</Button>
                           </CardActions>
                         </Card>
                       </Grid>
