@@ -12,9 +12,27 @@ import {
 } from "../../../misc/Product";
 import { RootState } from "../store/store";
 
+const initialProductSingle: ProductType = {
+  id: 0,
+  title: "",
+  price: 0,
+  description: "",
+  images: [],
+  creationAt: "",
+  updatedAt: "",
+  category: {
+    id: 0,
+    name: "",
+    image: "",
+    creationAt: "",
+    updatedAt: "",
+  },
+};
+
 interface initialProductType {
   entityProduct: ProductType[];
   entityByCategory: ProductByCategory;
+  entityProductById: ProductType;
   loadingProduct: boolean;
   errorProduct: string;
 }
@@ -23,6 +41,7 @@ interface initialProductType {
 const initialProduct: initialProductType = {
   entityProduct: [] as ProductType[],
   entityByCategory: [] as ProductByCategory,
+  entityProductById: initialProductSingle,
   loadingProduct: false,
   errorProduct: "" as string,
 };
@@ -33,6 +52,18 @@ export const fetchDataProduct = createAsyncThunk(
   async (url: string) => {
     try {
       const response: AxiosResponse<ProductType[]> = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const fetchDataProductById = createAsyncThunk(
+  "data/fetchDataProductById",
+  async (url: string) => {
+    try {
+      const response: AxiosResponse<ProductType> = await axios.get(url);
       return response.data;
     } catch (error) {
       throw error;
@@ -62,6 +93,7 @@ export const productSlice = createSlice({
 
         // Assign filtered products to the category ID in the result object
         if (productsInCategory.length > 0) {
+          //only return array of category that has product
           filteredProducts[categoryId] = productsInCategory;
         }
       });
@@ -83,6 +115,18 @@ export const productSlice = createSlice({
       .addCase(fetchDataProduct.rejected, (state, action) => {
         state.loadingProduct = false;
         state.errorProduct = action.payload as string;
+      })
+      .addCase(fetchDataProductById.pending, (state) => {
+        state.loadingProduct = true;
+        state.errorProduct = ""; //clear previous error
+      })
+      .addCase(fetchDataProductById.fulfilled, (state, action) => {
+        state.loadingProduct = false;
+        state.entityProductById = action.payload;
+      })
+      .addCase(fetchDataProductById.rejected, (state, action) => {
+        state.loadingProduct = false;
+        state.errorProduct = action.error.message ?? "Unknown error";
       });
   },
 });

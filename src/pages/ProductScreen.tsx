@@ -25,6 +25,7 @@ import "../style/ProductScreen.scss";
 import { websiteRouterList } from "../misc/BaseVariables";
 import { filterProductsByCategories } from "../hooks/features/slices/ProductSlice";
 import defaultProductPicture from "../components/pictures/default_product_image.jpg";
+import { CategorySingleType } from "../misc/Product";
 const ProductScreen = () => {
   //TODO: challenge
   //wwhen we display category: what should we do when that categories does have any product yet?
@@ -42,7 +43,7 @@ const ProductScreen = () => {
   const dispatch = useAppDispatch();
 
   //pages variables
-  let page = parseInt(queryParams.get("page") ?? "", 0) - 1; // //-1 cause pagination starts with 1 but array start with 0
+  let page = parseInt(queryParams.get("page") ?? "", 0) - 1; //-1 cause pagination starts with 1 but array start with 0
   let startIndex = 10 * page;
   let endIndex = startIndex + 10;
   const totalPages = Math.ceil(Object.keys(filteredProducts).length / 10);
@@ -54,6 +55,18 @@ const ProductScreen = () => {
     entityCategory
   );
 
+  const listOfCategoryThatHasProduct: CategorySingleType[] = Object.keys(
+    filteredProducts
+  ).reduce((result: CategorySingleType[], key) => {
+    if (filteredProducts.hasOwnProperty(key)) {
+      let category = entityCategory.find((cat) => cat.id === Number(key));
+      if (category) {
+        result.push(category);
+      }
+    }
+    return result;
+  }, []);
+
   if (page > totalPages) {
     //if page more than total pages
     page = totalPages;
@@ -62,12 +75,11 @@ const ProductScreen = () => {
   }
 
   if (endIndex > Object.keys(filteredProducts).length) {
-    //if endIndex is more than array length
     endIndex = Object.keys(filteredProducts).length;
   }
 
   const dataDisplay = useMemo(() => {
-    return entityCategory.slice(startIndex, endIndex);
+    return listOfCategoryThatHasProduct.slice(startIndex, endIndex);
   }, [entityCategory, startIndex, endIndex]);
 
   const scrollToTop = () => {
@@ -85,7 +97,15 @@ const ProductScreen = () => {
     navigate(websiteRouterList.product.shortLink + value);
     scrollToTop();
   };
-
+  /* console.log("start", startIndex);
+console.log("end", endIndex)
+  console.log("filteredProducts", filteredProducts);
+  console.log(
+    "Object.keys(filteredProducts).length ",
+    Object.keys(filteredProducts).length
+  );
+  console.log("entityCategory", entityCategory);
+  console.log("dataDisplay", dataDisplay); */
   const paginationBox = (
     <Box
       sx={{
@@ -127,6 +147,7 @@ const ProductScreen = () => {
                   >
                     <Typography variant="h5" gutterBottom>
                       {category.name}
+                      {category.id}
                     </Typography>
                     {/* "See More" button */}
 
@@ -174,7 +195,17 @@ const ProductScreen = () => {
                           </CardContent>
 
                           <CardActions>
-                            <Button size="small">More detail</Button>
+                            <Button
+                              size="small"
+                              onClick={() => {
+                                navigate(
+                                  websiteRouterList.productDetailById
+                                    .shortLink + item.id
+                                );
+                              }}
+                            >
+                              More detail
+                            </Button>
                             <Button size="small">Add to my cart</Button>
                           </CardActions>
                         </Card>

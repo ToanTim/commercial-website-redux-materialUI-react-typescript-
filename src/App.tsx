@@ -13,6 +13,7 @@ import Opening from "./components/Opening";
 import UserProfileScreen from "./pages/UserProfileScreen";
 import AuthenticationScreen from "./pages/AuthenticationScreen";
 import LoadingScreen from "./pages/LoadingScreen";
+import ProductDetailByIdScreen from "./pages/ProductDetailByIdScreen";
 
 function App() {
   return (
@@ -30,7 +31,10 @@ function App() {
 
               {/* route to dynamic webpage  */}
               <Route path="users/:id" element={<UserProfileScreen />} />
-
+              <Route
+                path="products/:id"
+                element={<ProductDetailByIdScreen />}
+              />
               {/* error pages */}
               <Route path="*" element={<NoPageScreen />} />
             </Routes>
