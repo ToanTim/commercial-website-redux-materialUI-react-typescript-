@@ -18,11 +18,12 @@ import {
 } from "../hooks/features/slices/UserSlice";
 import { userLoginType } from "../misc/User";
 import axios from "axios";
-import { VariantType, enqueueSnackbar } from "notistack";
 import { handleClickVariantPopUpWindow } from "../hooks/hooks";
+import { handleFormErrors } from "../hooks/functions";
 const AuthenticationScreen: React.FC = () => {
   const [isEmailAvailable, setIsEmailAvailable] = useState(null);
   const dispatch = useAppDispatch();
+
   const isLoggedIn = useAppSelector(
     (state: RootState) => state.authentication.loggedIn
   );
@@ -53,7 +54,11 @@ const AuthenticationScreen: React.FC = () => {
     }
 
     if (isOnError) {
-      console.log("isOnError", isOnError);
+      const handleClickOnLoginFail = handleClickVariantPopUpWindow(
+        "Authentication failed",
+        "error"
+      );
+      handleClickOnLoginFail();
     }
   }, [isLoggedIn, isOnError]);
 
@@ -86,6 +91,17 @@ const AuthenticationScreen: React.FC = () => {
 
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let loginErrorFormArray = handleFormErrors(loginData, ["passwordEmpty"]);
+
+    if (loginErrorFormArray.length > 0) {
+      loginErrorFormArray.map((item) => {
+        const handleClick = handleClickVariantPopUpWindow(item, "error");
+        handleClick();
+      });
+
+      loginErrorFormArray = []; //reset error list
+      return 0;
+    }
     try {
       const url = DataFetchLinkList.authentication.login;
       const bodyData = {
@@ -96,25 +112,39 @@ const AuthenticationScreen: React.FC = () => {
 
       // Dispatch the async thunk with the url and bodyData
       dispatch(userLoginAsuncThunk({ url, bodyData }));
+      const handleClick = handleClickVariantPopUpWindow(
+        "Login successful",
+        "success"
+      );
+      handleClick();
     } catch (error) {
       console.error("Login failed:", error);
     }
   };
 
-  const handleClickVariant = (message: string, variant: VariantType) => () => {
-    // variant could be success, error, warning, info, or default
-    enqueueSnackbar(message, { variant });
-  };
-
   const handleRegisterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Implement register logic
-    const handleClick = handleClickVariantPopUpWindow(
-      "This is a success message!",
-      "success"
-    );
-    handleClick(); // Invoke the returned function to trigger the Snackbar
-    console.log("Register Data:", registerData);
+    let registerErrorFormArray = handleFormErrors(registerData, [
+      "passwordEmpty",
+      "nameEmpty",
+      "nameString",
+      "passwordLength",
+      "passwordEmpty",
+      "passwordFormat",
+      "avatarEmpty",
+      "avatarFormat",
+    ]);
+
+    if (registerErrorFormArray.length > 0) {
+      registerErrorFormArray.map((item) => {
+        const handleClick = handleClickVariantPopUpWindow(item, "error");
+        handleClick();
+      });
+
+      registerErrorFormArray = []; //reset error list
+      return 0;
+    }
     console.log("Register Data:", registerData);
   };
 
