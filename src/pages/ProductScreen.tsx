@@ -147,7 +147,6 @@ console.log("end", endIndex)
                   >
                     <Typography variant="h5" gutterBottom>
                       {category.name}
-                      {category.id}
                     </Typography>
                     {/* "See More" button */}
 
@@ -160,7 +159,6 @@ console.log("end", endIndex)
                     )}
                   </Box>
                   <Box sx={{ display: "flex", overflowX: "auto", gap: 10 }}>
-                    {/* Dummy products (replace with your actual products data) */}
                     {filteredProducts[category.id].slice(0, 10).map((item) => (
                       <Grid item xs={12} sm={6} md={4}>
                         <Card

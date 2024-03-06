@@ -4,6 +4,13 @@ import type { RootState, AppDispatch } from "./features/store/store";
 import { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  updateStateAuthenticaitonToken,
+  updateStateCurrentUser,
+  updateStateLogin,
+} from "./features/slices/UserSlice";
+import { UserType, authenticationToken } from "../misc/User";
+import { DataBroswerName } from "../misc/BaseVariables";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch: () => AppDispatch = useDispatch;
@@ -39,3 +46,75 @@ const useReduxReducerRunner = (func: Function, params: any[], second?: any) => {
   }, [dispatch, second]);
 };
 export default useReduxReducerRunner;
+
+//localStoreage for storing user data
+
+export const loadUserStateFromStorage = (
+  reduxFunction: () => void,
+  storageDataName: string
+) => {
+  try {
+    const serializedState = localStorage.getItem(storageDataName); // Use 'sessionStorage' for session storage
+    if (serializedState === null) {
+      return undefined; // If no state is found, return undefined
+    }
+    return JSON.parse(serializedState);
+  } catch (error) {
+    console.error("Error loading user state from storage:", error);
+    return undefined; // Return undefined in case of error
+  }
+};
+
+// Function to store data in local storage
+export const saveDataToStorage = (storageDataName: string, data: any) => {
+  try {
+    // Convert data to JSON before storing
+    const jsonData = JSON.stringify(data);
+    localStorage.setItem(storageDataName, jsonData);
+  } catch (error) {
+    console.error("Error storing data in local storage:", error);
+  }
+};
+
+// Function to clear data from local storage
+export const clearUserStateFromStorage = (key: string) => {
+  try {
+    localStorage.removeItem(key);
+  } catch (error) {
+    console.error("Error clearing data from local storage:", error);
+  }
+};
+
+export const useCheckAndLoadDataFromStorage = (broswerNameArray: string[]) => {
+  const dispatch = useAppDispatch();
+  console.log("upload data to redux");
+  Object.values(broswerNameArray).forEach((item) => {
+    const storedData = localStorage.getItem(item);
+    if (storedData) {
+      // If data is found in storage, parse it and dispatch action to update Redux state
+      const parsedData = JSON.parse(storedData);
+
+      // Dispatch different actions based on the keyName
+      switch (item) {
+        case DataBroswerName.authenticationStorageToken.keyName:
+          // Dispatch action to update token
+          dispatch(
+            updateStateAuthenticaitonToken(parsedData as authenticationToken)
+          );
+          console.log("update token state to redux");
+          break;
+        case DataBroswerName.authenticationCurrentUser.keyName:
+          // Dispatch action to update current user data
+          dispatch(updateStateCurrentUser(parsedData as UserType));
+          console.log("update user current data state to redux");
+          break;
+        case DataBroswerName.isLoggedIn.keyName:
+          dispatch(updateStateLogin(parsedData as boolean));
+          console.log("update login state to redux");
+          break;
+        default:
+          break;
+      }
+    }
+  });
+};

@@ -15,6 +15,15 @@ const HomeScreen = () => {
   const dispatch = useAppDispatch();
   const productState = useAppSelector((state: RootState) => state.products);
   const categoryState = useAppSelector((state: RootState) => state.categories);
+  const isLoggedIn = useAppSelector(
+    (state: RootState) => state.authentication.loggedIn
+  );
+  const curentUserData = useAppSelector(
+    (state: RootState) => state.authentication.entityCurrentUser
+  );
+  const accessToken = useAppSelector(
+    (state: RootState) => state.authentication.accessToken
+  );
   const [showImage, setShowImage] = useState(true);
 
   //incase of not yet have state ready
@@ -44,9 +53,12 @@ const HomeScreen = () => {
     return <div>Loading...</div>;
   }
 
-  if (entityCategory) {
-    console.log("category data:", entityCategory);
-  }
+  /* console.log("Login in", isLoggedIn);
+  console.log("accessToken", accessToken);
+
+  if (curentUserData) {
+    console.log("curentUserData", curentUserData);
+  } */
 
   if (errorCategory) {
     return <div>Error Category: {errorCategory}</div>;

@@ -1,11 +1,6 @@
-interface RouteLinkText {
-  shortLink: string;
-  fullLink: string;
-}
-
 const basedLink = "http://localhost:3000/";
 
-export const websiteRouterList: { [key: string]: RouteLinkText } = {
+export const websiteRouterList: { [key: string]: TextType } = {
   //static routes
   home: {
     shortLink: "/",
@@ -27,17 +22,18 @@ export const websiteRouterList: { [key: string]: RouteLinkText } = {
     shortLink: "/products/",
     fullLink: basedLink + "/products/",
   },
+  user: {
+    //:id
+    shortLink: "/users/",
+    fullLink: basedLink + "/users/",
+  },
 };
 
-interface DataLinkText {
-  getAll: string;
-  getProductById: string;
-  getAll2?: string;
-  getAll3?: string;
-  getAll4?: string;
+interface TextType {
+  [key: string]: string;
 }
 
-export const DataFetchLinkList: { [key: string]: DataLinkText } = {
+export const DataFetchLinkList: { [key: string]: TextType } = {
   dataProduct: {
     getAll: "https://api.escuelajs.co/api/v1/products",
     getProductById: "https://api.escuelajs.co/api/v1/products/",
@@ -45,5 +41,28 @@ export const DataFetchLinkList: { [key: string]: DataLinkText } = {
   dataCategory: {
     getAll: "https://api.escuelajs.co/api/v1/categories",
     getProductById: "https://api.escuelajs.co/api/v1/products/",
+  },
+  authentication: {
+    //POST
+    login: "https://api.escuelajs.co/api/v1/auth/login",
+    register: "https://api.escuelajs.co/api/v1/users/",
+    emailIsAlreadyAvaiable:
+      "https://api.escuelajs.co/api/v1/users/is-available",
+    userProfile: "https://api.escuelajs.co/api/v1/auth/profile",
+
+    //PUT
+    updateProfile: "https://api.escuelajs.co/api/v1/users/", //+userId
+  },
+};
+
+export const DataBroswerName: { [key: string]: TextType } = {
+  authenticationStorageToken: {
+    keyName: "integrify_token",
+  },
+  authenticationCurrentUser: {
+    keyName: "integrify_current_user_data",
+  },
+  isLoggedIn: {
+    keyName: "integrify_isLoggedIn",
   },
 };

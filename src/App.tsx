@@ -14,8 +14,18 @@ import UserProfileScreen from "./pages/UserProfileScreen";
 import AuthenticationScreen from "./pages/AuthenticationScreen";
 import LoadingScreen from "./pages/LoadingScreen";
 import ProductDetailByIdScreen from "./pages/ProductDetailByIdScreen";
+import PopUpWindow from "./components/PopUpWindow";
+import { DataBroswerName } from "./misc/BaseVariables";
+import { useCheckAndLoadDataFromStorage } from "./hooks/hooks";
 
 function App() {
+  const keyNameBroswerStorageArray = Object.values(DataBroswerName).map(
+    (item) => item.keyName
+  );
+
+  //update state when startif there is any
+  useCheckAndLoadDataFromStorage(keyNameBroswerStorageArray);
+
   return (
     <>
       <main>
@@ -23,12 +33,12 @@ function App() {
           <BrowserRouter>
             <Opening />
             <Header />
+
             <Routes>
               {/* route to static pages */}
               <Route path="/" element={<HomeScreen />} />
               <Route path="products" element={<ProductScreen />} />
               <Route path="authentication" element={<AuthenticationScreen />} />
-
               {/* route to dynamic webpage  */}
               <Route path="users/:id" element={<UserProfileScreen />} />
               <Route
@@ -36,7 +46,8 @@ function App() {
                 element={<ProductDetailByIdScreen />}
               />
               {/* error pages */}
-              <Route path="*" element={<NoPageScreen />} />
+              <Route path="*" element={<NoPageScreen />} />\{/* test Route */}
+              {/* <Route path="/test" element={<PopUpWindow />} /> */}
             </Routes>
           </BrowserRouter>
         </div>

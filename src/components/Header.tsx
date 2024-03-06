@@ -1,5 +1,5 @@
 //external
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   AppBar,
@@ -12,16 +12,79 @@ import {
   Container,
   IconButton,
   Button,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import HiveIcon from "@mui/icons-material/Hive";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 
 //internal
-import { websiteRouterList } from "../misc/BaseVariables";
+import {
+  DataBroswerName,
+  DataFetchLinkList,
+  websiteRouterList,
+} from "../misc/BaseVariables";
+import {
+  clearUserStateFromStorage,
+  saveDataToStorage,
+  useAppDispatch,
+  useAppSelector,
+} from "../hooks/hooks";
+import { RootState } from "../hooks/features/store/store";
+import {
+  fetchCurrentUserDataByToken,
+  logout,
+} from "../hooks/features/slices/UserSlice";
+import LoadingScreen from "../pages/LoadingScreen";
 const Header = () => {
   //variable
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const isLoggedIn = useAppSelector(
+    (state: RootState) => state.authentication.loggedIn
+  );
+  const accessToken = useAppSelector(
+    (state: RootState) => state.authentication.accessToken
+  );
+  const userLoading = useAppSelector(
+    (state: RootState) => state.authentication.loadingUser
+  );
+  const currentUserData = useAppSelector(
+    (state: RootState) => state.authentication.entityCurrentUser
+  );
+
+  // State for managing menu anchor element
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  useEffect(() => {
+    console.log("accessToken", accessToken);
+    // Define the URL and bodyData required for the API call
+    const url = DataFetchLinkList.authentication.userProfile;
+
+    // Dispatch the async thunk with the URL and bodyData
+    dispatch(fetchCurrentUserDataByToken({ url, accessToken }));
+  }, [accessToken]); // Run this effect only once when the component mounts
+
+  useEffect(() => {
+    // Save data to local storage whenever it changes
+    saveDataToStorage(
+      DataBroswerName.authenticationCurrentUser.keyName,
+      currentUserData
+    );
+  }, [currentUserData]);
+
+  if (userLoading) {
+    return <LoadingScreen />;
+  }
 
   interface navButtonType {
     link: string;
@@ -75,18 +138,62 @@ const Header = () => {
             </Button>
           ))}
         </Container>
-        <IconButton
-          size="small"
-          edge="end"
-          color="inherit"
-          aria-label="profile"
-          sx={{ ml: "auto" }}
-          onClick={() => {
-            navigate(websiteRouterList.authentication.shortLink);
-          }}
-        >
-          <AccountCircleIcon />
-        </IconButton>
+        {/* Render menu if user is logged in */}
+        {isLoggedIn && currentUserData ? (
+          <div>
+            <IconButton
+              size="small"
+              edge="end"
+              color="inherit"
+              aria-label="profile"
+              onClick={handleMenuOpen}
+              sx={{ ml: "auto" }}
+            >
+              <AccountCircleIcon /> {currentUserData.name}
+            </IconButton>
+            <Menu
+              id="profile-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem
+                onClick={() => {
+                  navigate(
+                    websiteRouterList.user.shortLink + currentUserData.id
+                  );
+                  handleMenuClose();
+                }}
+              >
+                My Profile
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  // Dispatch logout action here
+                  handleMenuClose();
+                  dispatch(logout());
+                  clearUserStateFromStorage(DataBroswerName.isLoggedIn.keyName);
+                }}
+              >
+                Logout
+              </MenuItem>
+            </Menu>
+          </div>
+        ) : (
+          // Render login link if user is not logged in
+          <IconButton
+            size="small"
+            edge="end"
+            color="inherit"
+            aria-label="profile"
+            sx={{ ml: "auto" }}
+            onClick={() => {
+              navigate(websiteRouterList.authentication.shortLink);
+            }}
+          >
+            <AccountCircleIcon />
+          </IconButton>
+        )}
       </Toolbar>
     </AppBar>
   );
