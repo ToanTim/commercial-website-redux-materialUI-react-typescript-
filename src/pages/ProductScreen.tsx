@@ -27,7 +27,10 @@ import { websiteRouterList } from "../misc/BaseVariables";
 import { filterProductsByCategories } from "../hooks/features/slices/ProductSlice";
 import defaultProductPicture from "../components/pictures/default_product_image.jpg";
 import { CategorySingleType, ProductType } from "../misc/Product";
-import { handleTransformUrlImage } from "../hooks/functions";
+import {
+  handleTransformUrlImage,
+  onHandleAddToMyCartButton,
+} from "../hooks/functions";
 import { addItem } from "../hooks/features/slices/CartSlice";
 const ProductScreen = () => {
   //TODO: challenge

@@ -12,6 +12,8 @@ import {
 import { UserType, authenticationToken } from "../misc/User";
 import { DataBroswerName } from "../misc/BaseVariables";
 import { VariantType, enqueueSnackbar } from "notistack";
+import { CartType } from "../misc/Cart";
+import { updateStateCart } from "./features/slices/CartSlice";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch: () => AppDispatch = useDispatch;
@@ -47,24 +49,6 @@ const useReduxReducerRunner = (func: Function, params: any[], second?: any) => {
   }, [dispatch, second]);
 };
 export default useReduxReducerRunner;
-
-//localStoreage for storing user data
-
-export const loadUserStateFromStorage = (
-  reduxFunction: () => void,
-  storageDataName: string
-) => {
-  try {
-    const serializedState = localStorage.getItem(storageDataName); // Use 'sessionStorage' for session storage
-    if (serializedState === null) {
-      return undefined; // If no state is found, return undefined
-    }
-    return JSON.parse(serializedState);
-  } catch (error) {
-    console.error("Error loading user state from storage:", error);
-    return undefined; // Return undefined in case of error
-  }
-};
 
 // Function to store data in local storage
 export const saveDataToStorage = (storageDataName: string, data: any) => {
@@ -111,7 +95,9 @@ export const useCheckAndLoadDataFromStorage = (broswerNameArray: string[]) => {
           break;
         case DataBroswerName.isLoggedIn.keyName:
           dispatch(updateStateLogin(parsedData as boolean));
-
+          break;
+        case DataBroswerName.cartData.keyName:
+          dispatch(updateStateCart(parsedData as CartType));
           break;
         default:
           break;

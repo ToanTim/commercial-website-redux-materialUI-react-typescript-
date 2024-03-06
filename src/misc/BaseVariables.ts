@@ -69,4 +69,7 @@ export const DataBroswerName: { [key: string]: TextType } = {
   isLoggedIn: {
     keyName: "integrify_isLoggedIn",
   },
+  cartData: {
+    keyName: "integrify_cart_data",
+  },
 };

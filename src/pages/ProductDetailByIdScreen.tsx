@@ -16,10 +16,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import SwiperCore, { Navigation } from "swiper/modules";
 import "../style/ProductDetailByIdScreen.scss";
-import { DataFetchLinkList } from "../misc/BaseVariables";
+import { DataFetchLinkList, websiteRouterList } from "../misc/BaseVariables";
 import axios from "axios";
 import LoadingScreen from "./LoadingScreen";
 import useReduxReducerRunner, {
+  handleClickVariantPopUpWindow,
   useAppDispatch,
   useAppSelector,
 } from "../hooks/hooks";
@@ -27,11 +28,15 @@ import { fetchDataProductById } from "../hooks/features/slices/ProductSlice";
 import { RootState } from "../hooks/features/store/store";
 import ErrorScreen from "./ErrorScreen";
 import { useSelector } from "react-redux";
+import { addItem } from "../hooks/features/slices/CartSlice";
 
 const ProductDetailByIdScreen = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useAppDispatch();
+  const isLoggedIn = useAppSelector(
+    (state: RootState) => state.authentication.loggedIn
+  );
   const entityProductById = useSelector(
     (state: RootState) => state.products.entityProductById
   );
@@ -59,6 +64,19 @@ const ProductDetailByIdScreen = () => {
     JSON.parse(item.replace(/\[|\]/g, ""))
   );
 
+  const onHandleAddToMyCartButton = (product: ProductType) => {
+    const addToCartSuccee = handleClickVariantPopUpWindow(
+      "Added product to your cart",
+      "success"
+    );
+    if (isLoggedIn) {
+      dispatch(addItem(product));
+      addToCartSuccee();
+    } else {
+      // Redirect to authentication page if user is not logged in
+      navigate(websiteRouterList.authentication.shortLink);
+    }
+  };
   return (
     <Container maxWidth="lg">
       <Box mt={4}>
@@ -93,7 +111,12 @@ const ProductDetailByIdScreen = () => {
               <Typography variant="h6" gutterBottom>
                 Price: ${entityProductById.price}
               </Typography>
-              <Button variant="contained" color="primary" size="large">
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => onHandleAddToMyCartButton(entityProductById)}
+              >
                 Add to Cart
               </Button>
             </Box>

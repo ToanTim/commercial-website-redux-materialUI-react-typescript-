@@ -20,6 +20,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../hooks/hooks";
+import { handleTransformUrlImage } from "../hooks/functions";
 
 const ShoppingCartScreen: React.FC = () => {
   const cart = useAppSelector((state: RootState) => state.cart);
@@ -81,56 +82,66 @@ const ShoppingCartScreen: React.FC = () => {
             <Typography variant="subtitle1">Your cart is empty.</Typography>
           ) : (
             <List>
-              {cart.items.map((item) => (
-                <ListItem key={item.id} style={{ marginTop: 50 }}>
-                  <ListItemText
-                    primary={item.title}
-                    secondary={`Price: $${item.price}`}
-                  />
-                  <ListItemSecondaryAction>
-                    <Button
-                      onClick={() => handleRemoveItem(item.id)}
-                      startIcon={<RemoveShoppingCart />}
-                    >
-                      Remove
-                    </Button>
-                    <IconButton
-                      onClick={() =>
-                        handleEditQuantity(
+              {cart.items.map((item) => {
+                const productImageArray = handleTransformUrlImage(item.images);
+                return (
+                  <ListItem key={item.id} style={{ marginTop: 50 }}>
+                    <img
+                      src={productImageArray[0]}
+                      alt={`Product Image ${item.id}`}
+                      style={{ marginRight: 20, width: 100, height: "auto" }}
+                    />{" "}
+                    {/* Add image element */}
+                    <ListItemText
+                      primary={item.title}
+                      secondary={`Price: $${item.price}`}
+                    />
+                    <ListItemSecondaryAction>
+                      <Button
+                        onClick={() => handleRemoveItem(item.id)}
+                        startIcon={<RemoveShoppingCart />}
+                      >
+                        Remove
+                      </Button>
+                      <IconButton
+                        onClick={() =>
+                          handleEditQuantity(
+                            cart.quantityPerItem.find(
+                              (qi) => qi.itemId === item.id
+                            )?.quantity as number,
+                            item.id,
+                            -1
+                          )
+                        }
+                        aria-label="Decrease Quantity"
+                      >
+                        -
+                      </IconButton>
+                      <Typography variant="body1">
+                        {
                           cart.quantityPerItem.find(
                             (qi) => qi.itemId === item.id
-                          )?.quantity as number,
-                          item.id,
-                          -1
-                        )
-                      }
-                      aria-label="Decrease Quantity"
-                    >
-                      -
-                    </IconButton>
-                    <Typography variant="body1">
-                      {
-                        cart.quantityPerItem.find((qi) => qi.itemId === item.id)
-                          ?.quantity
-                      }
-                    </Typography>
-                    <IconButton
-                      onClick={() =>
-                        handleEditQuantity(
-                          cart.quantityPerItem.find(
-                            (qi) => qi.itemId === item.id
-                          )?.quantity as number,
-                          item.id,
-                          1
-                        )
-                      }
-                      aria-label="Increase Quantity"
-                    >
-                      +
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
+                          )?.quantity
+                        }
+                      </Typography>
+                      <IconButton
+                        onClick={() =>
+                          handleEditQuantity(
+                            cart.quantityPerItem.find(
+                              (qi) => qi.itemId === item.id
+                            )?.quantity as number,
+                            item.id,
+                            1
+                          )
+                        }
+                        aria-label="Increase Quantity"
+                      >
+                        +
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                );
+              })}
             </List>
           )}
           <Box mt={2}>

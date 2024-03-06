@@ -85,6 +85,11 @@ const Header = () => {
     );
   }, [currentUserData]);
 
+  useEffect(() => {
+    // Save data to local storage whenever it changes
+    saveDataToStorage(DataBroswerName.cartData.keyName, cart);
+  }, [cart]);
+
   if (userLoading) {
     return <LoadingScreen />;
   }
