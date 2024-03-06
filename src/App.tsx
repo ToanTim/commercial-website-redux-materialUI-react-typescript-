@@ -14,7 +14,6 @@ import UserProfileScreen from "./pages/UserProfileScreen";
 import AuthenticationScreen from "./pages/AuthenticationScreen";
 import LoadingScreen from "./pages/LoadingScreen";
 import ProductDetailByIdScreen from "./pages/ProductDetailByIdScreen";
-import PopUpWindow from "./components/PopUpWindow";
 import { DataBroswerName } from "./misc/BaseVariables";
 import { useCheckAndLoadDataFromStorage } from "./hooks/hooks";
 

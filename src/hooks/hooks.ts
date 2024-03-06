@@ -11,6 +11,7 @@ import {
 } from "./features/slices/UserSlice";
 import { UserType, authenticationToken } from "../misc/User";
 import { DataBroswerName } from "../misc/BaseVariables";
+import { VariantType, enqueueSnackbar } from "notistack";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch: () => AppDispatch = useDispatch;
@@ -87,7 +88,7 @@ export const clearUserStateFromStorage = (key: string) => {
 
 export const useCheckAndLoadDataFromStorage = (broswerNameArray: string[]) => {
   const dispatch = useAppDispatch();
-  console.log("upload data to redux");
+
   Object.values(broswerNameArray).forEach((item) => {
     const storedData = localStorage.getItem(item);
     if (storedData) {
@@ -101,16 +102,16 @@ export const useCheckAndLoadDataFromStorage = (broswerNameArray: string[]) => {
           dispatch(
             updateStateAuthenticaitonToken(parsedData as authenticationToken)
           );
-          console.log("update token state to redux");
+
           break;
         case DataBroswerName.authenticationCurrentUser.keyName:
           // Dispatch action to update current user data
           dispatch(updateStateCurrentUser(parsedData as UserType));
-          console.log("update user current data state to redux");
+
           break;
         case DataBroswerName.isLoggedIn.keyName:
           dispatch(updateStateLogin(parsedData as boolean));
-          console.log("update login state to redux");
+
           break;
         default:
           break;
@@ -118,3 +119,9 @@ export const useCheckAndLoadDataFromStorage = (broswerNameArray: string[]) => {
     }
   });
 };
+
+export const handleClickVariantPopUpWindow =
+  (message: string, variant: VariantType) => () => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar(message, { variant });
+  };

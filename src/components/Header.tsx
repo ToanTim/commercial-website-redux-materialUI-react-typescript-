@@ -66,7 +66,6 @@ const Header = () => {
   };
 
   useEffect(() => {
-    console.log("accessToken", accessToken);
     // Define the URL and bodyData required for the API call
     const url = DataFetchLinkList.authentication.userProfile;
 
@@ -149,8 +148,9 @@ const Header = () => {
               onClick={handleMenuOpen}
               sx={{ ml: "auto" }}
             >
-              <AccountCircleIcon /> {currentUserData.name}
+              <AccountCircleIcon />
             </IconButton>
+            {currentUserData.name}
             <Menu
               id="profile-menu"
               anchorEl={anchorEl}

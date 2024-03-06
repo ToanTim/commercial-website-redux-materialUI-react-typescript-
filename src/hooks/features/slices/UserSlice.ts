@@ -27,6 +27,7 @@ interface initialUserType {
   loggedIn: boolean;
   loadingUser: boolean;
   errorUser: string;
+  sucessUser: string;
 }
 
 // Initial for product is an emplty array
@@ -37,6 +38,7 @@ const initialUser: initialUserType = {
   loggedIn: false,
   loadingUser: false,
   errorUser: "" as string,
+  sucessUser: "" as string,
 };
 
 export const userLoginAsuncThunk = createAsyncThunk(
@@ -80,7 +82,7 @@ export const fetchCurrentUserDataByToken = createAsyncThunk(
           Authorization: `Bearer ${accessToken}`, // Add Authorization header
         },
       });
-      console.log("current user data from redux", response.data);
+
       return response.data;
     } catch (error) {
       throw error;
@@ -123,15 +125,32 @@ export const userSlice = createSlice({
         state.errorUser = ""; //clear previous error and token
         state.accessToken = "";
         state.refreshToken = "";
+        state.sucessUser = "";
       })
       .addCase(userLoginAsuncThunk.fulfilled, (state, action) => {
         state.loadingUser = false;
         state.loggedIn = true;
         state.refreshToken = action.payload.refresh_token as string;
         state.accessToken = action.payload.access_token as string;
+        state.sucessUser = "Login successful";
       })
       .addCase(userLoginAsuncThunk.rejected, (state, action) => {
         state.loggedIn = false;
+        state.loadingUser = false;
+        state.errorUser = action.error.message as string;
+      })
+
+      //user register
+      .addCase(userRegisterAsuncThunk.pending, (state) => {
+        state.loadingUser = true;
+        state.errorUser = ""; //clear previous error
+        state.sucessUser = "";
+      })
+      .addCase(userRegisterAsuncThunk.fulfilled, (state, action) => {
+        state.loadingUser = false;
+        state.sucessUser = "Register successful";
+      })
+      .addCase(userRegisterAsuncThunk.rejected, (state, action) => {
         state.loadingUser = false;
         state.errorUser = action.error.message as string;
       })

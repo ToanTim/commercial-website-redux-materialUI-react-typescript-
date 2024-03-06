@@ -17,8 +17,12 @@ import {
   userLoginAsuncThunk,
 } from "../hooks/features/slices/UserSlice";
 import { userLoginType } from "../misc/User";
-
+import axios from "axios";
+import { VariantType, enqueueSnackbar } from "notistack";
+import { handleClickVariantPopUpWindow } from "../hooks/hooks";
 const AuthenticationScreen: React.FC = () => {
+  const [isEmailAvailable, setIsEmailAvailable] = useState(null);
+  const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(
     (state: RootState) => state.authentication.loggedIn
   );
@@ -53,7 +57,20 @@ const AuthenticationScreen: React.FC = () => {
     }
   }, [isLoggedIn, isOnError]);
 
-  const dispatch = useAppDispatch();
+  /* const checkEmailAvailability = async (value: string) => {
+    try {
+      const response = await axios.post(
+        DataFetchLinkList.authentication.emailIsAlreadyAvaiable,
+        {
+          email: value,
+        }
+      );
+      setIsEmailAvailable(response.data.available);
+    } catch (error) {
+      console.error("Error checking email availability:", error);
+      // Handle error as needed
+    }
+  }; */
 
   const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
@@ -66,12 +83,6 @@ const AuthenticationScreen: React.FC = () => {
   const handleFormToggle = () => {
     setIsLoginForm(!isLoginForm);
   };
-
-  /* const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Implement login logic
-    console.log("Login Data:", loginData);
-  }; */
 
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -90,9 +101,20 @@ const AuthenticationScreen: React.FC = () => {
     }
   };
 
+  const handleClickVariant = (message: string, variant: VariantType) => () => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar(message, { variant });
+  };
+
   const handleRegisterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Implement register logic
+    const handleClick = handleClickVariantPopUpWindow(
+      "This is a success message!",
+      "success"
+    );
+    handleClick(); // Invoke the returned function to trigger the Snackbar
+    console.log("Register Data:", registerData);
     console.log("Register Data:", registerData);
   };
 
