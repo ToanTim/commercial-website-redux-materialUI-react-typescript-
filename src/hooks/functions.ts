@@ -4,12 +4,12 @@ export const handleFormErrors = (formData: any, errorNames: string[]) => {
   errorNames.forEach((errorName) => {
     switch (errorName) {
       case "nameEmpty":
-        if (!formData.username) {
+        if (!formData.name) {
           errors.push("Name should not be empty");
         }
         break;
       case "nameString":
-        if (typeof formData.username !== "string") {
+        if (typeof formData.name !== "string") {
           errors.push("Name must be a string");
         }
         break;

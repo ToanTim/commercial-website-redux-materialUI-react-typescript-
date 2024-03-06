@@ -140,17 +140,18 @@ const Header = () => {
         {/* Render menu if user is logged in */}
         {isLoggedIn && currentUserData ? (
           <div>
-            <IconButton
+            <Button
               size="small"
-              edge="end"
               color="inherit"
               aria-label="profile"
               onClick={handleMenuOpen}
-              sx={{ ml: "auto" }}
+              sx={{ display: "flex", alignItems: "center" }}
             >
-              <AccountCircleIcon />
-            </IconButton>
-            {currentUserData.name}
+              <IconButton size="small" color="inherit" aria-label="profile">
+                <AccountCircleIcon />
+              </IconButton>
+              {currentUserData.name}
+            </Button>
             <Menu
               id="profile-menu"
               anchorEl={anchorEl}
@@ -172,7 +173,16 @@ const Header = () => {
                   // Dispatch logout action here
                   handleMenuClose();
                   dispatch(logout());
-                  clearUserStateFromStorage(DataBroswerName.isLoggedIn.keyName);
+
+                  //turn DataBroswerName in to array of name
+                  const keyNameArrayToClear = Object.values(
+                    DataBroswerName
+                  ).map((item) => item.keyName);
+
+                  //Clear data from storage brower
+                  keyNameArrayToClear.map((item) => {
+                    clearUserStateFromStorage(item);
+                  });
                 }}
               >
                 Logout

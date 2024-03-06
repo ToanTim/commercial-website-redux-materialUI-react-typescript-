@@ -15,6 +15,7 @@ import {
 import {
   fetchCurrentUserDataByToken,
   userLoginAsuncThunk,
+  userRegisterAsuncThunk,
 } from "../hooks/features/slices/UserSlice";
 import { userLoginType } from "../misc/User";
 import axios from "axios";
@@ -28,6 +29,10 @@ const AuthenticationScreen: React.FC = () => {
     (state: RootState) => state.authentication.loggedIn
   );
 
+  const userLoginRegisterSuccessMessage = useAppSelector(
+    (state: RootState) => state.authentication.sucessUser
+  );
+
   const isOnError = useAppSelector(
     (state: RootState) => state.authentication.errorUser
   );
@@ -39,7 +44,7 @@ const AuthenticationScreen: React.FC = () => {
   });
 
   const [registerData, setRegisterData] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
     avatar: "",
@@ -125,6 +130,7 @@ const AuthenticationScreen: React.FC = () => {
   const handleRegisterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Implement register logic
+    console.log("registerData", registerData);
     let registerErrorFormArray = handleFormErrors(registerData, [
       "passwordEmpty",
       "nameEmpty",
@@ -145,7 +151,29 @@ const AuthenticationScreen: React.FC = () => {
       registerErrorFormArray = []; //reset error list
       return 0;
     }
-    console.log("Register Data:", registerData);
+
+    try {
+      const url = DataFetchLinkList.authentication.register;
+      const bodyData = {
+        // Provide the necessary login credentials here
+        name: registerData.name,
+        email: registerData.email,
+        password: registerData.password,
+        avatar: registerData.avatar,
+      };
+
+      // Dispatch the async thunk with the url and bodyData
+      dispatch(userRegisterAsuncThunk({ url, bodyData }));
+      const handleClick = handleClickVariantPopUpWindow(
+        "Register successful",
+        "success"
+      );
+      handleClick();
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+
+    setIsLoginForm(true);
   };
 
   return (
@@ -172,10 +200,10 @@ const AuthenticationScreen: React.FC = () => {
                 <TextField
                   fullWidth
                   margin="normal"
-                  label="Username"
+                  label="name"
                   type="text"
-                  name="username"
-                  value={registerData.username}
+                  name="name"
+                  value={registerData.name}
                   onChange={handleRegisterChange}
                 />
 
