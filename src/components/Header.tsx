@@ -70,12 +70,10 @@ const Header = () => {
   };
 
   useEffect(() => {
-    // Define the URL and bodyData required for the API call
     const url = DataFetchLinkList.authentication.userProfile;
 
-    // Dispatch the async thunk with the URL and bodyData
     dispatch(fetchCurrentUserDataByToken({ url, accessToken }));
-  }, [accessToken]); // Run this effect only once when the component mounts
+  }, [accessToken]);
 
   useEffect(() => {
     // Save data to local storage whenever it changes

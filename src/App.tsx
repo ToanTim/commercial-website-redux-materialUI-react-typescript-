@@ -15,10 +15,30 @@ import AuthenticationScreen from "./pages/AuthenticationScreen";
 import LoadingScreen from "./pages/LoadingScreen";
 import ProductDetailByIdScreen from "./pages/ProductDetailByIdScreen";
 import { DataBroswerName } from "./misc/BaseVariables";
-import { useCheckAndLoadDataFromStorage } from "./hooks/hooks";
+import {
+  clearUserStateFromStorage,
+  useAppSelector,
+  useCheckAndLoadDataFromStorage,
+} from "./hooks/hooks";
 import ShoppingCartScreen from "./pages/ShoppingCartScreen";
+import { RootState } from "./hooks/features/store/store";
 
 function App() {
+  const isLoggedIn = useAppSelector(
+    (state: RootState) => state.authentication.loggedIn
+  );
+
+  //TODO: fix bug: after few hour, application auto log out, userStateData still avaiable, guess: isLoggedIn auto change to false
+  if (!isLoggedIn) {
+    const keyNameArrayToClear = Object.values(DataBroswerName).map(
+      (item) => item.keyName
+    );
+
+    //Clear data from storage brower
+    keyNameArrayToClear.map((item) => {
+      clearUserStateFromStorage(item);
+    });
+  }
   const keyNameBroswerStorageArray = Object.values(DataBroswerName).map(
     (item) => item.keyName
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   List,
@@ -21,10 +21,22 @@ import {
   useAppSelector,
 } from "../hooks/hooks";
 import { handleTransformUrlImage } from "../hooks/functions";
+import { useNavigate } from "react-router-dom";
+import { websiteRouterList } from "../misc/BaseVariables";
 
 const ShoppingCartScreen: React.FC = () => {
   const cart = useAppSelector((state: RootState) => state.cart);
   const dispatch = useAppDispatch();
+  const isLoggedIn = useAppSelector(
+    (state: RootState) => state.authentication.loggedIn
+  );
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate(websiteRouterList.authentication.shortLink);
+    }
+  }, [isLoggedIn]);
 
   const handleRemoveItem = (itemId: number) => {
     dispatch(removeItem(itemId));

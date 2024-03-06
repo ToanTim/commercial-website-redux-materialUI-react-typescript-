@@ -92,7 +92,11 @@ const ProductDetailByIdScreen = () => {
             >
               {imageUrls.map((image, index) => (
                 <SwiperSlide key={index}>
-                  <img src={image} alt={`Product Image ${index}`} />
+                  <img
+                    src={image}
+                    alt={`Product Image ${index}`}
+                    style={{ maxHeight: "300px" }}
+                  />
                 </SwiperSlide>
               ))}
             </Swiper>

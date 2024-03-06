@@ -34,6 +34,7 @@ const ProductScreen = () => {
   //wwhen we display category: what should we do when that categories does have any product yet?
   // Implement Pagination so it can be reuseable
   // Add loadingScreen logic
+  // add features to cart, when product got delete from admin, it also delete from user cart
 
   const navigate = useNavigate();
   const isLoggedIn = useAppSelector(
@@ -62,17 +63,20 @@ const ProductScreen = () => {
     entityCategory
   );
 
-  const listOfCategoryThatHasProduct: CategorySingleType[] = Object.keys(
-    filteredProducts
-  ).reduce((result: CategorySingleType[], key) => {
-    if (filteredProducts.hasOwnProperty(key)) {
-      let category = entityCategory.find((cat) => cat.id === Number(key));
-      if (category) {
-        result.push(category);
-      }
-    }
-    return result;
-  }, []);
+  const listOfCategoryThatHasProduct = useMemo(() => {
+    return Object.keys(filteredProducts).reduce(
+      (result: CategorySingleType[], key) => {
+        if (filteredProducts.hasOwnProperty(key)) {
+          let category = entityCategory.find((cat) => cat.id === Number(key));
+          if (category) {
+            result.push(category);
+          }
+        }
+        return result;
+      },
+      []
+    );
+  }, [filteredProducts, entityCategory]);
 
   if (page > totalPages) {
     //if page more than total pages
