@@ -125,3 +125,22 @@ export const handleClickVariantPopUpWindow =
     // variant could be success, error, warning, info, or default
     enqueueSnackbar(message, { variant });
   };
+
+export const useScreenWidth = () => {
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup function to remove event listener when component unmounts
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []); // Empty dependency array ensures that the effect runs only once after the initial render
+
+  return screenWidth;
+};

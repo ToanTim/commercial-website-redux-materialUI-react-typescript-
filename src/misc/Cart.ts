@@ -1,3 +1,12 @@
+import { ProductType } from "./Product";
+
+interface quantityItem {
+  itemId: number;
+  quantity: number;
+}
 export interface CartType {
-  id: number;
+  items: ProductType[];
+  quantityPerItem: quantityItem[];
+  totalItems: number;
+  totalPrice: number;
 }

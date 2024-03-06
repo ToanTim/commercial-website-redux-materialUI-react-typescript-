@@ -17,6 +17,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 //internal
 import useReduxReducerRunner, {
+  handleClickVariantPopUpWindow,
   useAppDispatch,
   useAppSelector,
 } from "../hooks/hooks";
@@ -25,7 +26,9 @@ import "../style/ProductScreen.scss";
 import { websiteRouterList } from "../misc/BaseVariables";
 import { filterProductsByCategories } from "../hooks/features/slices/ProductSlice";
 import defaultProductPicture from "../components/pictures/default_product_image.jpg";
-import { CategorySingleType } from "../misc/Product";
+import { CategorySingleType, ProductType } from "../misc/Product";
+import { handleTransformUrlImage } from "../hooks/functions";
+import { addItem } from "../hooks/features/slices/CartSlice";
 const ProductScreen = () => {
   //TODO: challenge
   //wwhen we display category: what should we do when that categories does have any product yet?
@@ -33,6 +36,9 @@ const ProductScreen = () => {
   // Add loadingScreen logic
 
   const navigate = useNavigate();
+  const isLoggedIn = useAppSelector(
+    (state: RootState) => state.authentication.loggedIn
+  );
   const categoryState = useAppSelector((state: RootState) => state.categories);
   const filteredProducts = useAppSelector(
     (state: RootState) => state.products.entityByCategory
@@ -40,6 +46,7 @@ const ProductScreen = () => {
   const { entityCategory } = categoryState;
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
+
   const dispatch = useAppDispatch();
 
   //pages variables
@@ -122,6 +129,19 @@ console.log("end", endIndex)
     </Box>
   );
 
+  const onHandleAddToMyCartButton = (product: ProductType) => {
+    const addToCartSuccee = handleClickVariantPopUpWindow(
+      "Added product to your cart",
+      "success"
+    );
+    if (isLoggedIn) {
+      dispatch(addItem(product));
+      addToCartSuccee();
+    } else {
+      // Redirect to authentication page if user is not logged in
+      navigate(websiteRouterList.authentication.shortLink);
+    }
+  };
   return (
     <>
       <CssBaseline />
@@ -159,56 +179,69 @@ console.log("end", endIndex)
                     )}
                   </Box>
                   <Box sx={{ display: "flex", overflowX: "auto", gap: 10 }}>
-                    {filteredProducts[category.id].slice(0, 10).map((item) => (
-                      <Grid item xs={12} sm={6} md={4}>
-                        <Card
-                          className="card"
-                          sx={{ maxWidth: 345, minWidth: 250 }}
-                        >
-                          <CardMedia
-                            component="img"
-                            height="140"
-                            image={defaultProductPicture}
-                            alt="Product Image"
-                          />
-                          <CardContent className="cardContent">
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div"
-                            >
-                              {item.title}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              {item.description}
-                            </Typography>
-                            <Typography
-                              variant="h6"
-                              color="text.secondary"
-                              align="justify"
-                              style={{ textAlign: "center" }}
-                            >
-                              Price: {item.price} $
-                            </Typography>
-                          </CardContent>
+                    {filteredProducts[category.id].slice(0, 10).map((item) => {
+                      const imageUrls = handleTransformUrlImage(item.images);
+                      return (
+                        <Grid item xs={12} sm={6} md={4}>
+                          <Card
+                            className="card"
+                            sx={{ maxWidth: 345, minWidth: 250 }}
+                          >
+                            <CardMedia
+                              component="img"
+                              height="140"
+                              image={imageUrls[0]}
+                              alt="Product Image"
+                            />
+                            <CardContent className="cardContent">
+                              <Typography
+                                gutterBottom
+                                variant="h5"
+                                component="div"
+                              >
+                                {item.title}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                {item.description.length > 50
+                                  ? `${item.description.substring(0, 50)}...`
+                                  : item.description}
+                              </Typography>
+                              <Typography
+                                variant="h6"
+                                color="text.secondary"
+                                align="justify"
+                                style={{ textAlign: "center" }}
+                              >
+                                Price: {item.price} $
+                              </Typography>
+                            </CardContent>
 
-                          <CardActions>
-                            <Button
-                              size="small"
-                              onClick={() => {
-                                navigate(
-                                  websiteRouterList.productDetailById
-                                    .shortLink + item.id
-                                );
-                              }}
-                            >
-                              More detail
-                            </Button>
-                            <Button size="small">Add to my cart</Button>
-                          </CardActions>
-                        </Card>
-                      </Grid>
-                    ))}
+                            <CardActions>
+                              <Button
+                                size="small"
+                                onClick={() => {
+                                  navigate(
+                                    websiteRouterList.productDetailById
+                                      .shortLink + item.id
+                                  );
+                                }}
+                              >
+                                More detail
+                              </Button>
+                              <Button
+                                size="small"
+                                onClick={() => onHandleAddToMyCartButton(item)}
+                              >
+                                Add to my cart
+                              </Button>
+                            </CardActions>
+                          </Card>
+                        </Grid>
+                      );
+                    })}
                   </Box>
                 </div>
               );
@@ -224,3 +257,6 @@ console.log("end", endIndex)
 };
 
 export default ProductScreen;
+function navigate(shortLink: string) {
+  throw new Error("Function not implemented.");
+}

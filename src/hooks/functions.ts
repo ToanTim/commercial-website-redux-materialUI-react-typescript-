@@ -45,3 +45,7 @@ export const handleFormErrors = (formData: any, errorNames: string[]) => {
 
   return errors;
 };
+
+export const handleTransformUrlImage = (entity: any[]) => {
+  return entity.map((item) => JSON.parse(item.replace(/\[|\]/g, "")));
+};

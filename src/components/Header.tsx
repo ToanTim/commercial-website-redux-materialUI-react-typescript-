@@ -14,11 +14,12 @@ import {
   Button,
   Menu,
   MenuItem,
+  Badge,
 } from "@mui/material";
 import HiveIcon from "@mui/icons-material/Hive";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
-
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 //internal
 import {
   DataBroswerName,
@@ -30,6 +31,7 @@ import {
   saveDataToStorage,
   useAppDispatch,
   useAppSelector,
+  useScreenWidth,
 } from "../hooks/hooks";
 import { RootState } from "../hooks/features/store/store";
 import {
@@ -39,8 +41,10 @@ import {
 import LoadingScreen from "../pages/LoadingScreen";
 const Header = () => {
   //variable
+  const screenWidth = useScreenWidth();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const cart = useAppSelector((state: RootState) => state.cart);
   const isLoggedIn = useAppSelector(
     (state: RootState) => state.authentication.loggedIn
   );
@@ -140,18 +144,35 @@ const Header = () => {
         {/* Render menu if user is logged in */}
         {isLoggedIn && currentUserData ? (
           <div>
-            <Button
-              size="small"
-              color="inherit"
-              aria-label="profile"
-              onClick={handleMenuOpen}
-              sx={{ display: "flex", alignItems: "center" }}
-            >
-              <IconButton size="small" color="inherit" aria-label="profile">
-                <AccountCircleIcon />
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <IconButton
+                size="small"
+                color="inherit"
+                aria-label="profile"
+                onClick={() => navigate(websiteRouterList.cart.shortLink)}
+              >
+                <Badge badgeContent={cart.totalItems} color="error">
+                  <ShoppingBasketIcon />
+                </Badge>
               </IconButton>
-              {currentUserData.name}
-            </Button>
+
+              <Button
+                size="small"
+                color="inherit"
+                aria-label="profile"
+                onClick={handleMenuOpen}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  whiteSpace: "nowrap", // Ensure that the name remains on one line
+                }}
+              >
+                <IconButton size="small" color="inherit" aria-label="profile">
+                  <AccountCircleIcon />
+                </IconButton>
+                {screenWidth > 414 ? currentUserData.name : ""}
+              </Button>
+            </div>
             <Menu
               id="profile-menu"
               anchorEl={anchorEl}

@@ -16,6 +16,7 @@ import LoadingScreen from "./pages/LoadingScreen";
 import ProductDetailByIdScreen from "./pages/ProductDetailByIdScreen";
 import { DataBroswerName } from "./misc/BaseVariables";
 import { useCheckAndLoadDataFromStorage } from "./hooks/hooks";
+import ShoppingCartScreen from "./pages/ShoppingCartScreen";
 
 function App() {
   const keyNameBroswerStorageArray = Object.values(DataBroswerName).map(
@@ -38,6 +39,7 @@ function App() {
               <Route path="/" element={<HomeScreen />} />
               <Route path="products" element={<ProductScreen />} />
               <Route path="authentication" element={<AuthenticationScreen />} />
+              <Route path="cart" element={<ShoppingCartScreen />} />
               {/* route to dynamic webpage  */}
               <Route path="users/:id" element={<UserProfileScreen />} />
               <Route

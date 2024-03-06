@@ -130,7 +130,7 @@ const AuthenticationScreen: React.FC = () => {
   const handleRegisterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Implement register logic
-    console.log("registerData", registerData);
+    /* console.log("registerData", registerData); */
     let registerErrorFormArray = handleFormErrors(registerData, [
       "passwordEmpty",
       "nameEmpty",

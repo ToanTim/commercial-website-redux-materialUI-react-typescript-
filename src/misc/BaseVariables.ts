@@ -10,6 +10,10 @@ export const websiteRouterList: { [key: string]: TextType } = {
     shortLink: "/authentication",
     fullLink: basedLink + "/authentication",
   },
+  cart: {
+    shortLink: "/cart",
+    fullLink: basedLink + "/cart",
+  },
 
   //dynamic routes
   product: {
