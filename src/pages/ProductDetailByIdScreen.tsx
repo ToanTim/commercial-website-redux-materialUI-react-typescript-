@@ -29,6 +29,8 @@ import { RootState } from "../hooks/features/store/store";
 import ErrorScreen from "./ErrorScreen";
 import { useSelector } from "react-redux";
 import { addItem } from "../hooks/features/slices/CartSlice";
+import ButtonBaseComponent from "../components/Button/ButtonBaseComponent";
+import { handleTransformUrlImage } from "../hooks/functions";
 
 const ProductDetailByIdScreen = () => {
   const navigate = useNavigate();
@@ -60,9 +62,7 @@ const ProductDetailByIdScreen = () => {
     return <div>Error: {error}</div>; // Render error message
   }
 
-  const imageUrls = entityProductById.images.map((item) =>
-    JSON.parse(item.replace(/\[|\]/g, ""))
-  );
+  const imageUrls = handleTransformUrlImage(entityProductById.images);
 
   const onHandleAddToMyCartButton = (product: ProductType) => {
     const addToCartSuccee = handleClickVariantPopUpWindow(
@@ -79,6 +79,7 @@ const ProductDetailByIdScreen = () => {
   };
   return (
     <Container maxWidth="lg">
+      <ButtonBaseComponent />
       <Box mt={4}>
         <Typography variant="h4">{entityProductById.title}</Typography>
       </Box>
@@ -90,15 +91,17 @@ const ProductDetailByIdScreen = () => {
               modules={[Navigation]}
               className="mySwiper"
             >
-              {imageUrls.map((image, index) => (
-                <SwiperSlide key={index}>
-                  <img
-                    src={image}
-                    alt={`Product Image ${index}`}
-                    style={{ maxHeight: "300px" }}
-                  />
-                </SwiperSlide>
-              ))}
+              {imageUrls.map((image: string, index: number) => {
+                return (
+                  <SwiperSlide key={index}>
+                    <img
+                      src={image.replace(/^"(.*)"$/, "$1")}
+                      alt={`Product Image ${index}`}
+                      style={{ maxHeight: "500px" }}
+                    />
+                  </SwiperSlide>
+                );
+              })}
             </Swiper>
           </Grid>
           <Grid item xs={12} sm={6} md={6}>

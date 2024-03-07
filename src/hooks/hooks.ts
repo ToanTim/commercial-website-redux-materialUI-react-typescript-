@@ -75,6 +75,7 @@ export const useCheckAndLoadDataFromStorage = (broswerNameArray: string[]) => {
 
   Object.values(broswerNameArray).forEach((item) => {
     const storedData = localStorage.getItem(item);
+
     if (storedData) {
       // If data is found in storage, parse it and dispatch action to update Redux state
       const parsedData = JSON.parse(storedData);
@@ -94,6 +95,7 @@ export const useCheckAndLoadDataFromStorage = (broswerNameArray: string[]) => {
 
           break;
         case DataBroswerName.isLoggedIn.keyName:
+          console.log("update isLoggedIn", parsedData);
           dispatch(updateStateLogin(parsedData as boolean));
           break;
         case DataBroswerName.cartData.keyName:

@@ -13,7 +13,6 @@ import {
   websiteRouterList,
 } from "../misc/BaseVariables";
 import {
-  fetchCurrentUserDataByToken,
   userLoginAsuncThunk,
   userRegisterAsuncThunk,
 } from "../hooks/features/slices/UserSlice";
@@ -24,6 +23,9 @@ import { handleFormErrors } from "../hooks/functions";
 const AuthenticationScreen: React.FC = () => {
   const [isEmailAvailable, setIsEmailAvailable] = useState(null);
   const dispatch = useAppDispatch();
+  const isUserSuccesss = useAppSelector(
+    (state: RootState) => state.authentication.sucessUser
+  );
 
   const isLoggedIn = useAppSelector(
     (state: RootState) => state.authentication.loggedIn
@@ -54,7 +56,13 @@ const AuthenticationScreen: React.FC = () => {
   useEffect(() => {
     //if already login redirect to landing page
     if (isLoggedIn == true) {
+      console.log("this run store to broswer storage");
       saveDataToStorage(DataBroswerName.isLoggedIn.keyName, isLoggedIn);
+      const handleClick = handleClickVariantPopUpWindow(
+        "Login successful",
+        "success"
+      );
+      handleClick();
       navigation(websiteRouterList.home.shortLink);
     }
 
@@ -65,22 +73,15 @@ const AuthenticationScreen: React.FC = () => {
       );
       handleClickOnLoginFail();
     }
-  }, [isLoggedIn, isOnError]);
 
-  /* const checkEmailAvailability = async (value: string) => {
-    try {
-      const response = await axios.post(
-        DataFetchLinkList.authentication.emailIsAlreadyAvaiable,
-        {
-          email: value,
-        }
+    if (isUserSuccesss && !isLoggedIn) {
+      const handleClick = handleClickVariantPopUpWindow(
+        "Register successful",
+        "success"
       );
-      setIsEmailAvailable(response.data.available);
-    } catch (error) {
-      console.error("Error checking email availability:", error);
-      // Handle error as needed
+      handleClick();
     }
-  }; */
+  }, [isLoggedIn, isOnError, isUserSuccesss]);
 
   const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
@@ -117,11 +118,6 @@ const AuthenticationScreen: React.FC = () => {
 
       // Dispatch the async thunk with the url and bodyData
       dispatch(userLoginAsuncThunk({ url, bodyData }));
-      const handleClick = handleClickVariantPopUpWindow(
-        "Login successful",
-        "success"
-      );
-      handleClick();
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -164,13 +160,8 @@ const AuthenticationScreen: React.FC = () => {
 
       // Dispatch the async thunk with the url and bodyData
       dispatch(userRegisterAsuncThunk({ url, bodyData }));
-      const handleClick = handleClickVariantPopUpWindow(
-        "Register successful",
-        "success"
-      );
-      handleClick();
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Register failed:", error);
     }
 
     setIsLoginForm(true);
@@ -246,6 +237,3 @@ const AuthenticationScreen: React.FC = () => {
 };
 
 export default AuthenticationScreen;
-function dispatch(arg0: any) {
-  throw new Error("Function not implemented.");
-}

@@ -1,5 +1,5 @@
 //external
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import {
   Typography,
   AppBar,
@@ -20,6 +20,7 @@ import HiveIcon from "@mui/icons-material/Hive";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import SearchIcon from "@mui/icons-material/Search";
 //internal
 import {
   DataBroswerName,
@@ -39,15 +40,19 @@ import {
   logout,
 } from "../hooks/features/slices/UserSlice";
 import LoadingScreen from "../pages/LoadingScreen";
+
 const Header = () => {
   //variable
+
   const screenWidth = useScreenWidth();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const cart = useAppSelector((state: RootState) => state.cart);
+
   const isLoggedIn = useAppSelector(
     (state: RootState) => state.authentication.loggedIn
   );
+
   const accessToken = useAppSelector(
     (state: RootState) => state.authentication.accessToken
   );
@@ -72,7 +77,9 @@ const Header = () => {
   useEffect(() => {
     const url = DataFetchLinkList.authentication.userProfile;
 
-    dispatch(fetchCurrentUserDataByToken({ url, accessToken }));
+    if (accessToken.length > 0) {
+      dispatch(fetchCurrentUserDataByToken({ url, accessToken }));
+    }
   }, [accessToken]);
 
   useEffect(() => {
@@ -100,17 +107,23 @@ const Header = () => {
   const navButton: navButtonType[] = [
     {
       link: "#",
+      text: "Home",
+      onButtonClick: () => {
+        navigate(websiteRouterList.home.shortLink);
+      },
+    },
+    {
+      link: "#",
       text: "Products",
       onButtonClick: () => {
         navigate(websiteRouterList.product.shortLink + "1");
       },
     },
-    {
-      link: "#",
-      text: "Contact",
-      onButtonClick: () => {},
-    },
   ];
+
+  const redirectSearchScreen = () => {
+    navigate(websiteRouterList.productSearch.shortLink);
+  };
 
   return (
     <AppBar position="relative">
@@ -132,7 +145,14 @@ const Header = () => {
           </Button>
         </IconButton>
 
-        <Container maxWidth="sm">
+        <Container
+          maxWidth="sm"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           {navButton.map((item) => (
             <Button onClick={item.onButtonClick} variant="text" key={item.text}>
               <Typography
@@ -144,10 +164,20 @@ const Header = () => {
             </Button>
           ))}
         </Container>
-        {/* Render menu if user is logged in */}
-        {isLoggedIn && currentUserData ? (
-          <div>
-            <div style={{ display: "flex", alignItems: "center" }}>
+
+        <div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              size="small"
+              edge="end"
+              color="inherit"
+              aria-label="profile"
+              sx={{ ml: "auto" }}
+              onClick={redirectSearchScreen}
+            >
+              <SearchIcon />
+            </IconButton>
+            {isLoggedIn && (
               <IconButton
                 size="small"
                 color="inherit"
@@ -158,79 +188,78 @@ const Header = () => {
                   <ShoppingBasketIcon />
                 </Badge>
               </IconButton>
+            )}
 
-              <Button
-                size="small"
-                color="inherit"
-                aria-label="profile"
-                onClick={handleMenuOpen}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  whiteSpace: "nowrap", // Ensure that the name remains on one line
-                }}
-              >
-                <IconButton size="small" color="inherit" aria-label="profile">
-                  <AccountCircleIcon />
-                </IconButton>
-                {screenWidth > 414 ? currentUserData.name : ""}
-              </Button>
-            </div>
-            <Menu
-              id="profile-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
+            <Button
+              size="small"
+              color="inherit"
+              aria-label="profile"
+              onClick={
+                isLoggedIn
+                  ? handleMenuOpen
+                  : () => {
+                      navigate(websiteRouterList.authentication.shortLink);
+                    }
+              }
+              sx={{
+                margin: 0,
+                padding: 0,
+                display: "flex",
+                alignItems: "center",
+                whiteSpace: "nowrap",
+                minWidth: 34,
+              }}
             >
-              <MenuItem
-                onClick={() => {
-                  navigate(
-                    websiteRouterList.user.shortLink + currentUserData.id
-                  );
-                  handleMenuClose();
-                }}
-              >
-                My Profile
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  // Dispatch logout action here
-                  handleMenuClose();
-                  dispatch(logout());
-
-                  //turn DataBroswerName in to array of name
-                  const keyNameArrayToClear = Object.values(
-                    DataBroswerName
-                  ).map((item) => item.keyName);
-
-                  //Clear data from storage brower
-                  keyNameArrayToClear.map((item) => {
-                    clearUserStateFromStorage(item);
-                  });
-                }}
-              >
-                Logout
-              </MenuItem>
-            </Menu>
+              <IconButton size="small" color="inherit" aria-label="profile">
+                <AccountCircleIcon />
+              </IconButton>
+              {screenWidth > 500 && currentUserData ? currentUserData.name : ""}
+            </Button>
+            {/*  {isLoggedIn && currentUserData ? ( */}
           </div>
-        ) : (
-          // Render login link if user is not logged in
-          <IconButton
-            size="small"
-            edge="end"
-            color="inherit"
-            aria-label="profile"
-            sx={{ ml: "auto" }}
-            onClick={() => {
-              navigate(websiteRouterList.authentication.shortLink);
-            }}
+          <Menu
+            id="profile-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
           >
-            <AccountCircleIcon />
-          </IconButton>
-        )}
+            <MenuItem
+              onClick={() => {
+                navigate(websiteRouterList.user.shortLink + currentUserData.id);
+                handleMenuClose();
+              }}
+            >
+              My Profile
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                // Dispatch logout action here
+                handleMenuClose();
+                dispatch(logout());
+
+                navigate(websiteRouterList.authentication.shortLink);
+                //turn DataBroswerName in to array of name
+                const keyNameArrayToClear = Object.values(DataBroswerName).map(
+                  (item) => item.keyName
+                );
+
+                //Clear data from storage brower
+                keyNameArrayToClear.map((item) => {
+                  clearUserStateFromStorage(item);
+                });
+                console.log("this run ");
+              }}
+            >
+              Logout
+            </MenuItem>
+          </Menu>
+        </div>
       </Toolbar>
     </AppBar>
   );
 };
 
 export default Header;
+function setIsPopupOpen(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}

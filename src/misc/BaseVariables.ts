@@ -21,6 +21,11 @@ export const websiteRouterList: { [key: string]: TextType } = {
     shortLink: "/products?page=",
     fullLink: basedLink + "/products?page=",
   },
+  productSearch: {
+    //category_name=?
+    shortLink: "/search",
+    fullLink: basedLink + "/search",
+  },
   productDetailById: {
     //:id
     shortLink: "/products/",

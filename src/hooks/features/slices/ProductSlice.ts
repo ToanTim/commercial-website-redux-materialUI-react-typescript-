@@ -37,15 +37,28 @@ const initialProductSingle: ProductType = {
 interface initialProductType {
   entityProduct: ProductType[];
   entityByCategory: ProductByCategory;
+  entityByPriceOrder: ProductType[];
+  entityByFilter: ProductType[];
   entityProductById: ProductType;
   loadingProduct: boolean;
   errorProduct: string;
+}
+
+interface EditProductPayload {
+  productId: number;
+  newData: Partial<ProductType>;
+}
+
+interface DeleteProductPayload {
+  productId: number;
 }
 
 // Initial for product is an emplty array
 const initialProduct: initialProductType = {
   entityProduct: [] as ProductType[],
   entityByCategory: [] as ProductByCategory,
+  entityByPriceOrder: [] as ProductType[],
+  entityByFilter: [] as ProductType[],
   entityProductById: initialProductSingle,
   loadingProduct: false,
   errorProduct: "" as string,
@@ -54,6 +67,47 @@ const initialProduct: initialProductType = {
 // Create an async thunk to fetch data
 export const fetchDataProduct = createAsyncThunk(
   "data/fetchDataProduct",
+  async (url: string) => {
+    try {
+      const response: AxiosResponse<ProductType[]> = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const editProduct = createAsyncThunk(
+  "product/editProduct",
+  async (payload: EditProductPayload) => {
+    const { productId, newData } = payload;
+    try {
+      const response: AxiosResponse<ProductType> = await axios.put(
+        `/api/products/${productId}`,
+        newData
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const deleteProduct = createAsyncThunk(
+  "product/deleteProduct",
+  async (payload: DeleteProductPayload) => {
+    const { productId } = payload;
+    try {
+      await axios.delete(`/api/products/${productId}`);
+      return productId;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const fetchDataProductByFilter = createAsyncThunk(
+  "data/fetchDataProductByFilter",
   async (url: string) => {
     try {
       const response: AxiosResponse<ProductType[]> = await axios.get(url);
@@ -106,6 +160,25 @@ export const productSlice = createSlice({
       // Update the state with filtered products
       state.entityByCategory = filteredProducts;
     },
+    filterProductsByPriceLowToHigh: (state) => {
+      state.entityByPriceOrder = state.entityProduct
+        .slice()
+        .sort((a, b) => a.price - b.price);
+    },
+    filterProductsByPriceHighToLow: (state) => {
+      state.entityByPriceOrder = state.entityProduct
+        .slice()
+        .sort((a, b) => b.price - a.price);
+    },
+    filterProductsByDefault: (state) => {
+      state.entityByPriceOrder = state.entityProduct;
+    },
+    startLoading: (state) => {
+      state.loadingProduct = true;
+    },
+    stopLoading: (state) => {
+      state.loadingProduct = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -132,11 +205,64 @@ export const productSlice = createSlice({
       .addCase(fetchDataProductById.rejected, (state, action) => {
         state.loadingProduct = false;
         state.errorProduct = action.error.message ?? "Unknown error";
+      })
+      .addCase(fetchDataProductByFilter.pending, (state) => {
+        state.loadingProduct = true;
+        state.errorProduct = ""; //clear previous error
+      })
+      .addCase(fetchDataProductByFilter.fulfilled, (state, action) => {
+        state.loadingProduct = false;
+        state.entityByFilter = action.payload as ProductType[];
+      })
+      .addCase(fetchDataProductByFilter.rejected, (state, action) => {
+        state.loadingProduct = false;
+        state.errorProduct = action.payload as string;
+      })
+      .addCase(editProduct.pending, (state) => {
+        state.loadingProduct = true;
+        state.errorProduct = ""; // Clear previous error
+      })
+      .addCase(editProduct.fulfilled, (state, action) => {
+        state.loadingProduct = false;
+        // Update the product in the state with the edited data
+        const editedProductIndex = state.entityProduct.findIndex(
+          (product) => product.id === action.payload.id
+        );
+        if (editedProductIndex !== -1) {
+          state.entityProduct[editedProductIndex] = action.payload;
+        }
+      })
+      .addCase(editProduct.rejected, (state, action) => {
+        state.loadingProduct = false;
+        state.errorProduct = action.error.message ?? "Unknown error";
+      })
+      // Handle deleteProduct thunk
+      .addCase(deleteProduct.pending, (state) => {
+        state.loadingProduct = true;
+        state.errorProduct = ""; // Clear previous error
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loadingProduct = false;
+        // Remove the deleted product from the state
+        state.entityProduct = state.entityProduct.filter(
+          (product) => product.id !== action.payload
+        );
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.loadingProduct = false;
+        state.errorProduct = action.error.message ?? "Unknown error";
       });
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { filterProductsByCategories } = productSlice.actions;
+export const {
+  filterProductsByCategories,
+  filterProductsByPriceLowToHigh,
+  filterProductsByPriceHighToLow,
+  filterProductsByDefault,
+  startLoading,
+  stopLoading,
+} = productSlice.actions;
 
 export default productSlice.reducer;

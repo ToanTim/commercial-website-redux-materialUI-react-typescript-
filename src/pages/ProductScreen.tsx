@@ -23,12 +23,16 @@ import useReduxReducerRunner, {
 } from "../hooks/hooks";
 import { RootState } from "../hooks/features/store/store";
 import "../style/ProductScreen.scss";
-import { websiteRouterList } from "../misc/BaseVariables";
-import { filterProductsByCategories } from "../hooks/features/slices/ProductSlice";
+import { DataFetchLinkList, websiteRouterList } from "../misc/BaseVariables";
+import {
+  fetchDataProduct,
+  filterProductsByCategories,
+} from "../hooks/features/slices/ProductSlice";
 import defaultProductPicture from "../components/pictures/default_product_image.jpg";
 import { CategorySingleType, ProductType } from "../misc/Product";
-import { handleTransformUrlImage } from "../hooks/functions";
+import { handleTransformUrlImage, scrollToTop } from "../hooks/functions";
 import { addItem } from "../hooks/features/slices/CartSlice";
+import { fetchDataCategory } from "../hooks/features/slices/CategorySlice";
 const ProductScreen = () => {
   //TODO: challenge
   //wwhen we display category: what should we do when that categories does have any product yet?
@@ -49,6 +53,13 @@ const ProductScreen = () => {
   const queryParams = new URLSearchParams(search);
 
   const dispatch = useAppDispatch();
+
+  useReduxReducerRunner(fetchDataProduct, [
+    DataFetchLinkList.dataProduct.getAll as any,
+  ]);
+  useReduxReducerRunner(fetchDataCategory, [
+    DataFetchLinkList.dataCategory.getAll as any,
+  ]);
 
   //pages variables
   let page = parseInt(queryParams.get("page") ?? "", 0) - 1; //-1 cause pagination starts with 1 but array start with 0
@@ -93,14 +104,6 @@ const ProductScreen = () => {
     return listOfCategoryThatHasProduct.slice(startIndex, endIndex);
   }, [entityCategory, startIndex, endIndex]);
 
-  const scrollToTop = () => {
-    // fucntion to scroll to the top after click pagination page
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth", // Optional smooth scrolling behavior
-    });
-  };
-
   const handleChangePagination = (
     event: React.ChangeEvent<unknown>,
     value: number //this is numeber of page clicked on pagition bar
@@ -108,15 +111,7 @@ const ProductScreen = () => {
     navigate(websiteRouterList.product.shortLink + value);
     scrollToTop();
   };
-  /* console.log("start", startIndex);
-console.log("end", endIndex)
-  console.log("filteredProducts", filteredProducts);
-  console.log(
-    "Object.keys(filteredProducts).length ",
-    Object.keys(filteredProducts).length
-  );
-  console.log("entityCategory", entityCategory);
-  console.log("dataDisplay", dataDisplay); */
+
   const paginationBox = (
     <Box
       sx={{
@@ -175,7 +170,18 @@ console.log("end", endIndex)
                     {/* "See More" button */}
 
                     {filteredProducts[category.id].length > 10 ? (
-                      <Button variant="contained" color="primary" size="small">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={() =>
+                          navigate(
+                            websiteRouterList.productSearch.shortLink +
+                              "?categoryId=" +
+                              category.id
+                          )
+                        }
+                      >
                         See More
                       </Button>
                     ) : (
@@ -185,6 +191,7 @@ console.log("end", endIndex)
                   <Box sx={{ display: "flex", overflowX: "auto", gap: 10 }}>
                     {filteredProducts[category.id].slice(0, 10).map((item) => {
                       const imageUrls = handleTransformUrlImage(item.images);
+
                       return (
                         <Grid item xs={12} sm={6} md={4}>
                           <Card
@@ -194,9 +201,10 @@ console.log("end", endIndex)
                             <CardMedia
                               component="img"
                               height="140"
-                              image={imageUrls[0]}
+                              image={imageUrls[0].replace(/^"(.*)"$/, "$1")}
                               alt="Product Image"
                             />
+
                             <CardContent className="cardContent">
                               <Typography
                                 gutterBottom
@@ -261,6 +269,3 @@ console.log("end", endIndex)
 };
 
 export default ProductScreen;
-function navigate(shortLink: string) {
-  throw new Error("Function not implemented.");
-}

@@ -19,7 +19,7 @@ const Opening = () => {
   const [showImage, setShowImage] = useState(true);
   const [divDisplay, setDivDisplay] = useState(entityProduct ? false : true); //refresh page does not need opening component -want to test if first visit from user or user does refresh page
   const categoryState = useAppSelector((state: RootState) => state.categories);
-  const { entityCategory } = categoryState;
+
   //Fetch initial data for application
   useReduxReducerRunner(fetchDataProduct, [
     DataFetchLinkList.dataProduct.getAll as any,

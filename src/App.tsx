@@ -14,21 +14,35 @@ import UserProfileScreen from "./pages/UserProfileScreen";
 import AuthenticationScreen from "./pages/AuthenticationScreen";
 import LoadingScreen from "./pages/LoadingScreen";
 import ProductDetailByIdScreen from "./pages/ProductDetailByIdScreen";
-import { DataBroswerName } from "./misc/BaseVariables";
-import {
+import { DataBroswerName, DataFetchLinkList } from "./misc/BaseVariables";
+import useReduxReducerRunner, {
   clearUserStateFromStorage,
   useAppSelector,
   useCheckAndLoadDataFromStorage,
 } from "./hooks/hooks";
 import ShoppingCartScreen from "./pages/ShoppingCartScreen";
 import { RootState } from "./hooks/features/store/store";
+import ProductSearchScreen from "./pages/ProductSearchScreen";
+import { fetchDataProduct } from "./hooks/features/slices/ProductSlice";
+import { fetchDataCategory } from "./hooks/features/slices/CategorySlice";
 
 function App() {
+  /* useReduxReducerRunner(fetchDataCategory, [
+    DataFetchLinkList.dataCategory.getAll as any,
+  ]); */
   const isLoggedIn = useAppSelector(
     (state: RootState) => state.authentication.loggedIn
   );
 
   //TODO: fix bug: after few hour, application auto log out, userStateData still avaiable, guess: isLoggedIn auto change to false
+
+  const keyNameBroswerStorageArray = Object.values(DataBroswerName).map(
+    (item) => item.keyName
+  );
+
+  //update state when start if there is any
+  useCheckAndLoadDataFromStorage(keyNameBroswerStorageArray);
+
   if (!isLoggedIn) {
     const keyNameArrayToClear = Object.values(DataBroswerName).map(
       (item) => item.keyName
@@ -39,19 +53,15 @@ function App() {
       clearUserStateFromStorage(item);
     });
   }
-  const keyNameBroswerStorageArray = Object.values(DataBroswerName).map(
-    (item) => item.keyName
-  );
 
-  //update state when startif there is any
-  useCheckAndLoadDataFromStorage(keyNameBroswerStorageArray);
-
+  /* if (isProductLoading) {
+    return <LoadingScreen />;
+  } */
   return (
     <>
       <main>
         <div>
           <BrowserRouter>
-            <Opening />
             <Header />
 
             <Routes>
@@ -66,6 +76,8 @@ function App() {
                 path="products/:id"
                 element={<ProductDetailByIdScreen />}
               />
+              {/*ProductSearchScreen: title&price_min&price_max&category */}
+              <Route path="search" element={<ProductSearchScreen />} />
               {/* error pages */}
               <Route path="*" element={<NoPageScreen />} />\{/* test Route */}
               {/* <Route path="/test" element={<PopUpWindow />} /> */}
