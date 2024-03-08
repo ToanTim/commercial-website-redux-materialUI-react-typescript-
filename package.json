@@ -15,6 +15,7 @@
     "@types/node": "^16.18.80",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
+    "@types/redux-mock-store": "^1.0.6",
     "axios": "^1.6.7",
     "notistack": "^3.0.1",
     "react": "^18.2.0",
