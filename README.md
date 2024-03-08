@@ -1,52 +1,132 @@
-Start working
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/6764957/52892445-9045cf80-3136-11e9-9d5e-a1c47e505372.png" width="100" alt="project-logo">
+</p>
+<p align="center">
+    <h1 align="center">fs17-Frontend-project E-Commerce Project</h1>
+</p>
+<p align="center"> <em>Developed with the software and tools below.</em>
+</p>
+<p align="center">
+<img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
+<img src="https://img.shields.io/badge/Redux-593D88?style=for-the-badge&logo=redux&logoColor=white" alt="Redux">
+<img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+<img src="https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white" alt="React Router">
+<img src="https://img.shields.io/badge/tailwindcss-0F172A?style=for-the-badge&logo=mui&logoColor=white" alt="tailwindcss">
+<img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white" alt="Jest">
+</p>
 
 # Frontend project
 
-This repository for the Frontend project to build an e-commerce website.
+This project is developed using ReactJS, TypeScript, React Router Dom, Redux Toolkit, Material UI, and SASS, following a structured architecture that includes components, hooks, screens, and unit testing. The main purpose of this project is to create an e-commerce website where customers can easily explore, choose, and purchase products online. The architecture highlights code reusability by centralizing base variables such as route links, fetch links, and browser storage names into one place. Whenever they are needed, they can be imported from the Base Variables file. Components are also centralized, such as the ButtonBaseComponent, which contains all the design configurations for buttons used throughout the application.
 
-## Requirements
 
-### Basic requirements
+---
+## 📂 Folder Structure
 
-The Front end project must use TypeScript and Redux toolkit.
+```sh
+fs17-Frontend-project
+├-- node_modules
+│
+├-- public
+│   ├-- favicon.ico
+│   ├-- index.html
+│   └-- manifest.json
+│
+└-- src
+│   |-- components
+|   |   |-- button
+|   |   |-- pictures
+|   |   |-- Swiper
+|   |   |-- Footer.tsx
+|   |   |-- Header.tsx
+│   |-- misc
+│   |-- pages
+│   |-- hooks
+|   |   |-- features
+|   |   |-- functions.ts
+|   |   |-- hooks.ts
+│   |-- test
+|   |   |-- cart
+|   |   |-- categories
+|   |   |-- products
+|   |   |-- user
+│   |-- utils
+│   ├-- App.css
+│   ├-- App.js
+│   ├-- App.test.js
+│   ├-- index.css
+│   ├-- index.js
+│   ├-- logo.svg
+│   └-- setupTests.js
+│   └-- theme.js
+│
+├-- .gitignore
+├-- jest.config.js
+├-- package-lock.json
+├-- package.json
+├-- README.md
+├-- tsconfig.json
 
-1. Use the API endpoint `https://fakeapi.platzi.com/`.
+```
+---
 
-2. Create at lease 4 pages (can be more if you want): Page for all products, product page, profile page (only available if user logins), and cart page (cart page could be a page or a modal)
+## 🌏 Live-Url
 
-3. Create Redux store for following features:
+- [Here is the link](https://65ea8764a3d06a29cdf28547--meek-creponne-7e0a0f.netlify.app/)
 
-   - product reducer: get all products, find a single products, filter products by categories, sort products by price. Create, update and delete a product (enable update & delete features only for admin of the webapp)
-   - user reducer: register and login
-   - cart reducer: add product to cart, remove products, update products's quantity in cart
+## 📷 Screenshots review
 
-4. When adding routers to your application, set certain routes to be private. For example, route to user profile page should not be accessible if user has not logged in.
+![App Screenshot](screenshots/home.png)
+![App Screenshot](screenshots/all-products.png)
+![App Screenshot](screenshots/signup.png)
+![App Screenshot](screenshots/login.png)
+![App Screenshot](screenshots/user-profile.png)
+![App Screenshot](screenshots/add-product.png)
+![App Screenshot](screenshots/edit-product.png)
+![App Screenshot](screenshots/cart.png)
 
-5. Styling: must have responsive
+## 📍 API Reference
 
-6. Implement unit testing for the reducers
+For the development of this project, we have used the [Platzi API](https://fakeapi.platzi.com/) as a key API reference.
 
-7. **Deploy** the application and rewrite README file.
+## 🚀 Getting Started
 
-### Additional features:
+### ⚙️ Install
 
-- Use Context API to switch theme
-- Use pagination when fetching/displaying all the products
-- Implement performance optimization where applicable
+1. Clone the repository:
 
-## Grading (1-5)
+```sh
+git clone https://github.com/muzahidswe/fs17-Frontend-project.git
+```
 
-1: Late submission or not complete basic requirements
+2. Change to the project directory:
 
-2: Basic requirement + Presentation
+```sh
+cd fs17-Frontend-project
+```
 
-3: Folder structure + follow convention(naming convention ,loading, error) + some additional features
+3. Install the dependencies:
 
-4: All additional features + reusable logic + custom hook
+```sh
+npm install
+```
 
-5: UI-UX (for example: send alert when user add same product) + styling (animation or transition, scroll to top) + advanced feature (google log in)
+### ► Run Project
 
-## Deadline
+Use the following command to run:
 
-- Presentation: **7/3** and **8/3/ 2024**
-- Submitting Front-end project **10am 8/3/2024**
+```sh
+npm start
+```
+
+### 🧪 Unit Testing using JEST
+
+Use the following command to run tests:
+
+```sh
+npm test or npx jest
+```
+
+Tests for this project are written using Jest, with the assistance of [msw](https://mswjs.io/) for mocking the server. The project utilizes three mock servers for handling products, categories, and users respectively. The tests are structured to cover various aspects of the application's functionality, including unit tests.
+
+![App Screenshot](screenshots/test-output.png)
