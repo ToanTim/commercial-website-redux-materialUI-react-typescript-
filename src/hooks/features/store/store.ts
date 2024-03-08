@@ -23,12 +23,17 @@ const rootReducer = combineReducers({
   cart: CartSlice,
 });
 
-export function setupStore(preloadedState?: Partial<RootState>) {
+//for testing purposes
+export const createTestStore = () => {
   return configureStore({
-    reducer: rootReducer,
-    preloadedState,
+    reducer: {
+      products: ProductSlice,
+      categories: CategorySlice,
+      authentication: UserSlice,
+      cart: CartSlice,
+    },
   });
-}
+};
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
