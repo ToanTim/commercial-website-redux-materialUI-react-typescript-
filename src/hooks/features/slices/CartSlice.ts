@@ -26,10 +26,16 @@ export const cartSlice = createSlice({
       if (existingItemIndex !== -1) {
         // If item already exists in cart, increase quantity
         state.quantityPerItem[existingItemIndex].quantity++;
+        state.quantityPerItem[existingItemIndex].totalPriceByItem =
+          price * state.quantityPerItem[existingItemIndex].quantity;
       } else {
         // Otherwise, add new item to the cart
         state.items.push(action.payload);
-        state.quantityPerItem.push({ itemId: id, quantity: 1 });
+        state.quantityPerItem.push({
+          itemId: id,
+          quantity: 1,
+          totalPriceByItem: price,
+        });
       }
 
       // Update totalItems and totalPrice

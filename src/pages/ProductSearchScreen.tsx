@@ -284,6 +284,8 @@ const ProductSearchScreen = () => {
         "&categoryId=" +
         categoryId;
 
+      console.log(searchUrl);
+
       debouncedFetchDataProduct(searchUrl);
       setIsSearchPopup(false);
       setTimeout(() => {

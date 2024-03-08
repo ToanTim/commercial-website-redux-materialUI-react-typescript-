@@ -10,7 +10,7 @@ import {
 
 import { ProductType } from "../misc/Product";
 import { useNavigate, useParams } from "react-router-dom";
-import defaultProductPicture from "../components/pictures/default_product_image.jpg";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";

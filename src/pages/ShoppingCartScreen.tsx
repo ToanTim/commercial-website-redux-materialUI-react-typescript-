@@ -64,7 +64,7 @@ const ShoppingCartScreen: React.FC = () => {
       return 0;
     }
     dispatch(updateQuantity({ itemId, quantity }));
-
+    console.log("cart", cart);
     if (quantityAdded == 1) {
       const increaseItemSuccess = handleClickVariantPopUpWindow(
         "Increase quantity of item successful",
@@ -99,14 +99,26 @@ const ShoppingCartScreen: React.FC = () => {
                 return (
                   <ListItem key={item.id} style={{ marginTop: 50 }}>
                     <img
-                      src={productImageArray[0]}
+                      src={productImageArray[0].replace(/^"(.*)"$/, "$1")}
                       alt={`Product Image ${item.id}`}
                       style={{ marginRight: 20, width: 100, height: "auto" }}
                     />{" "}
                     {/* Add image element */}
                     <ListItemText
                       primary={item.title}
-                      secondary={`Price: $${item.price}`}
+                      secondary={
+                        <React.Fragment>
+                          <div>Price: ${item.price}</div>
+                          <div>
+                            Total: $
+                            {item.price *
+                              (cart.quantityPerItem.find(
+                                (qi) => qi.itemId === item.id
+                              )?.quantity || 1)}
+                          </div>{" "}
+                          {/* Add null check for quantity */}
+                        </React.Fragment>
+                      }
                     />
                     <ListItemSecondaryAction>
                       <Button
