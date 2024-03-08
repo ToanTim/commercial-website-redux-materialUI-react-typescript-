@@ -96,7 +96,7 @@ For the development of this project, we have used the [Platzi API](https://fakea
 1. Clone the repository:
 
 ```sh
-git clone https://github.com/muzahidswe/fs17-Frontend-project.git
+git clone https://github.com/ToanTim/fs17-Frontend-project.git
 ```
 
 2. Change to the project directory:
@@ -116,7 +116,7 @@ npm install
 Use the following command to run:
 
 ```sh
-npm start
+yarn start
 ```
 
 ### 🧪 Unit Testing using JEST
@@ -129,4 +129,3 @@ npm test or npx jest
 
 Tests for this project are written using Jest, with the assistance of [msw](https://mswjs.io/) for mocking the server. The project utilizes three mock servers for handling products, categories, and users respectively. The tests are structured to cover various aspects of the application's functionality, including unit tests.
 
-![App Screenshot](screenshots/test-output.png)
