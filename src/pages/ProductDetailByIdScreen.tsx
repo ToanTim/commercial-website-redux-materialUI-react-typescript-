@@ -78,7 +78,7 @@ const ProductDetailByIdScreen = () => {
     }
   };
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" style={{ minHeight: "100vh" }}>
       <ButtonBaseComponent />
       <Box mt={4}>
         <Typography variant="h4">{entityProductById.title}</Typography>

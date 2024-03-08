@@ -1,79 +1,71 @@
-//external
-import React, { useEffect, useState } from "react";
-import { Box, Button, Container, Fade, Typography } from "@mui/material";
+//external import
+import { Box, Button, Fade, Slide, Typography } from "@mui/material";
+import React, { useState } from "react";
 
-//internal
-import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import { RootState } from "../hooks/features/store/store";
-import { fetchDataProduct } from "../hooks/features/slices/ProductSlice";
-import "../style/HomeScreen.scss";
+//internal import
+import "../style/Opening.scss";
+import useReduxReducerRunner, { useAppSelector } from "../hooks/hooks";
+import {
+  fetchDataProduct,
+  filterProductsByCategories,
+} from "../hooks/features/slices/ProductSlice";
 import { DataFetchLinkList } from "../misc/BaseVariables";
 import { fetchDataCategory } from "../hooks/features/slices/CategorySlice";
-import useReduxReducerRunner from "../hooks/hooks";
-import LoadingScreen from "./LoadingScreen";
-const HomeScreen = () => {
-  const dispatch = useAppDispatch();
+import { RootState } from "../hooks/features/store/store";
+
+import "../style/Opening.scss";
+const Opening = () => {
   const productState = useAppSelector((state: RootState) => state.products);
-  const categoryState = useAppSelector((state: RootState) => state.categories);
-  const isLoggedIn = useAppSelector(
-    (state: RootState) => state.authentication.loggedIn
-  );
-  const curentUserData = useAppSelector(
-    (state: RootState) => state.authentication.entityCurrentUser
-  );
-  const [showImage, setShowImage] = useState(true);
-
-  //incase of not yet have state ready
-  if (!productState) {
-    return <div>Loading...</div>;
-  }
-
-  if (!categoryState) {
-    return <div>Loading...</div>;
-  }
-
-  //Loading and error handling
   const { loadingProduct, errorProduct, entityProduct } = productState;
-  const { loadingCategory, errorCategory, entityCategory } = categoryState;
+  const [showImage, setShowImage] = useState(true);
+  const [divDisplay, setDivDisplay] = useState(true); //refresh page does not need opening component -want to test if first visit from user or user does refresh page
+  const categoryState = useAppSelector((state: RootState) => state.categories);
 
-  //Product
-  if (loadingProduct) {
-    return <LoadingScreen></LoadingScreen>;
+  interface textOrderType {
+    id: number;
+    timeOut: number;
+    text: string;
   }
 
-  if (errorProduct) {
-    return <div>Error Product: {errorProduct}</div>;
-  }
+  useReduxReducerRunner(fetchDataProduct, [
+    DataFetchLinkList.dataProduct.getAll as any,
+  ]);
 
-  //Category
-  if (loadingCategory) {
-    return <div>Loading...</div>;
-  }
-
-  console.log("Login in", isLoggedIn);
-
-  if (curentUserData) {
-    console.log("curentUserData", curentUserData);
-  }
-
-  if (errorCategory) {
-    return <div>Error Category: {errorCategory}</div>;
-  }
-
-  const handleClick = () => {
-    setShowImage(false);
-    setTimeout(() => {
-      setShowImage(true);
-    }, 2000); // fade out for 2 seconds
-  };
+  const textOrder: textOrderType[] = [
+    { id: 1, timeOut: 2000, text: "Welcome to BeeHouse " },
+    { id: 2, timeOut: 3000, text: "Fast search with chatGPT" },
+    { id: 3, timeOut: 4000, text: "Everything you need with one click" },
+    { id: 4, timeOut: 5000, text: "Book, delivery, recieve within 5 minutes" },
+  ];
 
   return (
-    <div className="homepage">
-      {entityCategory.map((item) => (
-        <p>{item.name}</p>
-      ))}
+    <div className="openning__div">
+      <div className="openning__fade-image_overlay-content">
+        {textOrder.map((item) => {
+          return (
+            <Slide
+              direction="left"
+              in
+              mountOnEnter
+              unmountOnExit
+              timeout={item.timeOut}
+              key={item.id}
+            >
+              <Typography variant="h4">{item.text}</Typography>
+            </Slide>
+          );
+        })}
+        <Slide direction="down" in mountOnEnter unmountOnExit timeout={6000}>
+          <Button
+            variant="contained"
+            className="openning__fade-image_overlay-content-button"
+          >
+            <Typography variant="h4">Shop now</Typography>
+          </Button>
+        </Slide>
+      </div>
     </div>
   );
 };
 
-export default HomeScreen;
+export default Opening;

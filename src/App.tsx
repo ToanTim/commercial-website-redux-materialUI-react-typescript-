@@ -25,6 +25,7 @@ import { RootState } from "./hooks/features/store/store";
 import ProductSearchScreen from "./pages/ProductSearchScreen";
 import { fetchDataProduct } from "./hooks/features/slices/ProductSlice";
 import { fetchDataCategory } from "./hooks/features/slices/CategorySlice";
+import Footer from "./components/Footer";
 
 function App() {
   /* useReduxReducerRunner(fetchDataCategory, [
@@ -82,6 +83,7 @@ function App() {
               <Route path="*" element={<NoPageScreen />} />\{/* test Route */}
               {/* <Route path="/test" element={<PopUpWindow />} /> */}
             </Routes>
+            <Footer />
           </BrowserRouter>
         </div>
       </main>

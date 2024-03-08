@@ -43,7 +43,7 @@ import LoadingScreen from "../pages/LoadingScreen";
 
 const Header = () => {
   //variable
-
+  const [isLoading, setIsLoading] = useState(false);
   const screenWidth = useScreenWidth();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -95,7 +95,7 @@ const Header = () => {
     saveDataToStorage(DataBroswerName.cartData.keyName, cart);
   }, [cart]);
 
-  if (userLoading) {
+  if (isLoading) {
     return <LoadingScreen />;
   }
 
@@ -116,7 +116,11 @@ const Header = () => {
       link: "#",
       text: "Products",
       onButtonClick: () => {
+        setIsLoading(true);
         navigate(websiteRouterList.product.shortLink + "1");
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 5000);
       },
     },
   ];
@@ -213,7 +217,9 @@ const Header = () => {
               <IconButton size="small" color="inherit" aria-label="profile">
                 <AccountCircleIcon />
               </IconButton>
-              {screenWidth > 500 && currentUserData ? currentUserData.name : ""}
+              {screenWidth > 500 && currentUserData && isLoggedIn
+                ? currentUserData.name
+                : ""}
             </Button>
             {/*  {isLoggedIn && currentUserData ? ( */}
           </div>
@@ -247,7 +253,6 @@ const Header = () => {
                 keyNameArrayToClear.map((item) => {
                   clearUserStateFromStorage(item);
                 });
-                console.log("this run ");
               }}
             >
               Logout

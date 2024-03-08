@@ -1,5 +1,5 @@
-const basedLink = "http://localhost:3000/";
-
+/* const basedLink = "http://localhost:3000/"; */
+const basedLink = window.location.href;
 export const websiteRouterList: { [key: string]: TextType } = {
   //static routes
   home: {

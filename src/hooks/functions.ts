@@ -75,7 +75,7 @@ export const handleFormErrors = (formData: any, errorNames: string[]) => {
         }
         break;
       case "minimumMoreThanMaximum":
-        if (formData.minimumPrice > formData.maximumPrice) {
+        if (Number(formData.minimumPrice) > Number(formData.maximumPrice)) {
           errors.push("Minimum can not be more than maximum");
         }
         break;

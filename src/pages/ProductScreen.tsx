@@ -145,7 +145,10 @@ const ProductScreen = () => {
     <>
       <CssBaseline />
       <main>
-        <Container maxWidth="md">
+        <Container
+          maxWidth="md"
+          style={{ minHeight: "100vh", paddingBottom: 50 }}
+        >
           {paginationBox}
           {dataDisplay.map((category) => {
             if (

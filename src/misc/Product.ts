@@ -24,3 +24,11 @@ export interface ProductByCategory {
 }
 
 export type CategorySingleType = Pick<CategoryType, "id" | "name" | "image">;
+
+export interface ProductTypeSingle {
+  title: string;
+  price: number;
+  description: string;
+  images: string[];
+  categoryId: number;
+}

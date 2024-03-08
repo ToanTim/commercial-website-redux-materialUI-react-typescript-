@@ -140,6 +140,10 @@ const ProductSearchScreen = () => {
     DataFetchLinkList.dataProduct.getAll + "?categoryId=" + categoryIdQuery,
   ]);
 
+  useReduxReducerRunner(fetchDataCategory, [
+    DataFetchLinkList.dataCategory.getAll,
+  ]);
+
   useEffect(() => {
     setSortedData(entityProductDefault);
   }, [entityProductDefault]);
@@ -255,6 +259,7 @@ const ProductSearchScreen = () => {
       popUpNotificationWindowProductSearch();
     });
 
+    console.log(formData);
     if (errorInputList.length <= 0) {
       setIsLoading(true);
       let categoryId = "";
@@ -279,13 +284,11 @@ const ProductSearchScreen = () => {
         "&categoryId=" +
         categoryId;
 
-      console.log(searchUrl);
       debouncedFetchDataProduct(searchUrl);
       setIsSearchPopup(false);
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
-      console.log(formData);
     }
   };
   const popSearchPopUpWindowComponent = (
@@ -370,75 +373,16 @@ const ProductSearchScreen = () => {
   );
 
   return (
-    <Container maxWidth="md">
+    <Container
+      maxWidth="md"
+      style={{ minHeight: "100vh", paddingBottom: totalPages < 2 ? 50 : 0 }}
+    >
       <ButtonBaseComponent />
       <Grid container spacing={2} paddingTop={10}>
         <Grid item xs={12} sm={6} md={6}>
           <Button variant="contained" fullWidth onClick={handleSearchPopupOpen}>
             Filter
           </Button>
-          {/* <Grid
-            container
-            spacing={2}
-            flexDirection="column"
-            paddingBottom="20px"
-          >
-            <Grid item xs={12} sm={6} md={6}>
-              <TextField
-                label="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                variant="outlined"
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={6}>
-              <Autocomplete
-                value={category}
-                options={categoryNamesArray}
-                onChange={(event, newValue, reason) => {
-                  if (
-                    event.type === "keydown" &&
-                    ((event as React.KeyboardEvent).key === "Backspace" ||
-                      (event as React.KeyboardEvent).key === "Delete") &&
-                    reason === "removeOption"
-                  ) {
-                    return;
-                  }
-
-                  if (newValue == null) {
-                    newValue = "";
-                  }
-                  setCategory(newValue);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    margin="dense"
-                    id="category"
-                    name="category"
-                    label="Category"
-                    fullWidth
-                    variant="outlined"
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={6}>
-              <Slider
-                getAriaLabel={() => "Temperature range"}
-                value={[minimumPrice, maximumPrice]}
-                onChange={(_event, newValue) => {
-                  if (Array.isArray(newValue)) {
-                    console.log(newValue);
-                    setMinimumPrice(newValue[0]);
-                    setMaximumPrice(newValue[1]);
-                  }
-                }}
-                valueLabelDisplay="auto"
-              />
-            </Grid>
-          </Grid> */}
         </Grid>
         <Grid item xs={12} sm={6} md={6}>
           <Button variant="contained" fullWidth onClick={handleSortButtonClick}>

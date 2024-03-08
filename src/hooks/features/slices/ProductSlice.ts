@@ -13,9 +13,11 @@ import {
   CategorySingleType,
   ProductByCategory,
   ProductType,
+  ProductTypeSingle,
 } from "../../../misc/Product";
 import { RootState } from "../store/store";
 import { TypedActionCreator } from "@reduxjs/toolkit/dist/mapBuilders";
+import { DataFetchLinkList } from "../../../misc/BaseVariables";
 
 const initialProductSingle: ProductType = {
   id: 0,
@@ -42,6 +44,7 @@ interface initialProductType {
   entityProductById: ProductType;
   loadingProduct: boolean;
   errorProduct: string;
+  successProduct: boolean;
 }
 
 interface EditProductPayload {
@@ -62,6 +65,7 @@ const initialProduct: initialProductType = {
   entityProductById: initialProductSingle,
   loadingProduct: false,
   errorProduct: "" as string,
+  successProduct: false,
 };
 
 // Create an async thunk to fetch data
@@ -83,9 +87,10 @@ export const editProduct = createAsyncThunk(
     const { productId, newData } = payload;
     try {
       const response: AxiosResponse<ProductType> = await axios.put(
-        `/api/products/${productId}`,
+        `${DataFetchLinkList.dataProduct.getProductById + productId}`,
         newData
       );
+
       return response.data;
     } catch (error) {
       throw error;
@@ -98,8 +103,25 @@ export const deleteProduct = createAsyncThunk(
   async (payload: DeleteProductPayload) => {
     const { productId } = payload;
     try {
-      await axios.delete(`/api/products/${productId}`);
+      await axios.delete(
+        `${DataFetchLinkList.dataProduct.getProductById + productId}`
+      );
       return productId;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const createNewProduct = createAsyncThunk(
+  "product/createNewProduct",
+  async (newProductData: ProductTypeSingle) => {
+    try {
+      const response: AxiosResponse<ProductType> = await axios.post(
+        DataFetchLinkList.dataProduct.getProductById,
+        newProductData
+      );
+      return response.data;
     } catch (error) {
       throw error;
     }
@@ -218,8 +240,11 @@ export const productSlice = createSlice({
         state.loadingProduct = false;
         state.errorProduct = action.payload as string;
       })
+
+      //handle edit product
       .addCase(editProduct.pending, (state) => {
         state.loadingProduct = true;
+        state.successProduct = false;
         state.errorProduct = ""; // Clear previous error
       })
       .addCase(editProduct.fulfilled, (state, action) => {
@@ -231,14 +256,17 @@ export const productSlice = createSlice({
         if (editedProductIndex !== -1) {
           state.entityProduct[editedProductIndex] = action.payload;
         }
+        state.successProduct = true;
       })
       .addCase(editProduct.rejected, (state, action) => {
         state.loadingProduct = false;
+        state.successProduct = false;
         state.errorProduct = action.error.message ?? "Unknown error";
       })
       // Handle deleteProduct thunk
       .addCase(deleteProduct.pending, (state) => {
         state.loadingProduct = true;
+        state.loadingProduct = false;
         state.errorProduct = ""; // Clear previous error
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
@@ -247,8 +275,27 @@ export const productSlice = createSlice({
         state.entityProduct = state.entityProduct.filter(
           (product) => product.id !== action.payload
         );
+        state.loadingProduct = true;
       })
       .addCase(deleteProduct.rejected, (state, action) => {
+        state.loadingProduct = false;
+        state.loadingProduct = false;
+        state.errorProduct = action.error.message ?? "Unknown error";
+      })
+      //Handle product creation
+      .addCase(createNewProduct.pending, (state) => {
+        state.loadingProduct = true;
+        state.loadingProduct = false;
+        state.errorProduct = ""; // Clear previous error
+      })
+      .addCase(createNewProduct.fulfilled, (state, action) => {
+        state.loadingProduct = false;
+        if (action.payload) {
+          state.entityProduct.push(action.payload);
+        }
+      })
+      .addCase(createNewProduct.rejected, (state, action) => {
+        state.loadingProduct = false;
         state.loadingProduct = false;
         state.errorProduct = action.error.message ?? "Unknown error";
       });

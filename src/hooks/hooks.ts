@@ -95,7 +95,7 @@ export const useCheckAndLoadDataFromStorage = (broswerNameArray: string[]) => {
 
           break;
         case DataBroswerName.isLoggedIn.keyName:
-          console.log("update isLoggedIn", parsedData);
+
           dispatch(updateStateLogin(parsedData as boolean));
           break;
         case DataBroswerName.cartData.keyName:

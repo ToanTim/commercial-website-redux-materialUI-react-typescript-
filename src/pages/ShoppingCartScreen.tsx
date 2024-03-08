@@ -82,11 +82,11 @@ const ShoppingCartScreen: React.FC = () => {
 
   const handleCheckout = () => {
     // Implement your checkout logic here
-    console.log("Checkout clicked");
+    alert("Checkout clicked");
   };
 
   return (
-    <Container>
+    <Container style={{ minHeight: "100vh" }}>
       <Grid container justifyContent="center">
         <Grid item xs={12} md={8}>
           <Typography variant="h4">Shopping Cart</Typography>

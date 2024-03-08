@@ -56,7 +56,6 @@ const AuthenticationScreen: React.FC = () => {
   useEffect(() => {
     //if already login redirect to landing page
     if (isLoggedIn == true) {
-      console.log("this run store to broswer storage");
       saveDataToStorage(DataBroswerName.isLoggedIn.keyName, isLoggedIn);
       const handleClick = handleClickVariantPopUpWindow(
         "Login successful",
@@ -168,7 +167,7 @@ const AuthenticationScreen: React.FC = () => {
   };
 
   return (
-    <Grid container spacing={2} justifyContent="center">
+    <Grid container spacing={2} justifyContent="center" minHeight="100vh">
       <Grid item xs={12} sm={6}>
         <Paper elevation={3} sx={{ padding: 2 }}>
           <Typography variant="h5" gutterBottom>
