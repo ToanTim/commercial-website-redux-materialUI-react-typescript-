@@ -73,7 +73,17 @@ fs17-Frontend-project
 ## 🌏 Live-Url
 
 - [Here is the link](https://65ea8764a3d06a29cdf28547--meek-creponne-7e0a0f.netlify.app/)
-
+  
+## Features and highlights about project 
+- Landing page animation using Material UI.
+- Form validation.
+- Authentication system login signup.
+- Save data in browser storage to update Redux status at applications start up.
+- Data, links, routes, storage name are centralized in one single file called basedVariable.tsx . So I can import and use cross applications, benefits when there is change in links or storage name in the future.
+- Sorted algorithm for product by price, name, category.
+- Project is highlighted on reusuability of code.
+- Card, Product and users with redux
+- Handle user roles, customer and admin, privilege actions 
 ## 📷 Screenshots review
 
 ![App Screenshot](screenshots/home.png)
@@ -128,4 +138,16 @@ npm test or npx jest
 ```
 
 Tests for this project are written using Jest, with the assistance of [msw](https://mswjs.io/) for mocking the server. The project utilizes three mock servers for handling products, categories, and users respectively. The tests are structured to cover various aspects of the application's functionality, including unit tests.
+
+
+### Deployment 
+Netlify service
+- run command yarn
+  ```sh
+  yarn build
+  ```
+- At Netlify homepage, click deploy manually
+- Import build folder to Netlify
+- Click on live deployment link to visit website 
+
 
